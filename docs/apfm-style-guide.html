@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>APFM Design Profile — Stella Style Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Mulish:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --apfm-ink:#333333; --apfm-navy:#1F3D54; --apfm-navy-tint:#E7EFF4; --apfm-blue:#6C9BB8;
+  --apfm-coral:#E4735E; --apfm-coral-dark:#C85A47; --apfm-apricot:#F4C77B;
+  --apfm-cream:#FBF7F1; --apfm-sand:#F1E8DA;
+  --apfm-sage:#6FA890; --success:#3F8E6C; --warning:#E0A23B; --danger:#C4503B;
+  --apfm-white:#FFFFFF; --gray-50:#F7F6F4; --gray-100:#EEEDEA; --gray-300:#D6D3CD; --gray-500:#8A867E; --gray-700:#55524C;
+  --font-display:'Fraunces',Georgia,serif; --font-sans:'Mulish',-apple-system,'Segoe UI',Roboto,sans-serif;
+  --radius-sm:8px; --radius:12px; --radius-lg:20px;
+  --shadow-sm:0 1px 2px rgba(31,61,84,.06); --shadow:0 8px 24px rgba(31,61,84,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--apfm-cream);color:var(--apfm-ink);font-family:var(--font-sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:48px 32px 80px}
+h1,h2,h3,.display{font-family:var(--font-display);color:var(--apfm-navy);font-weight:600;line-height:1.15;margin:0}
+.display{font-size:44px}
+h1{font-size:34px;margin-bottom:6px}
+h2{font-size:26px;margin:0 0 20px}
+h3{font-size:20px}
+.eyebrow{font-family:var(--font-sans);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--apfm-coral);margin-bottom:10px}
+.lead{font-size:18px;color:var(--gray-700);max-width:70ch}
+.muted{color:var(--gray-500)}
+section{margin-top:56px}
+.divider{height:1px;background:var(--apfm-sand);border:0;margin:0}
+.card{background:var(--apfm-white);border:1px solid var(--gray-100);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:24px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.g2,.g3,.g4{grid-template-columns:1fr}}
+/* swatches */
+.sw{border-radius:var(--radius);overflow:hidden;border:1px solid var(--gray-100);background:#fff}
+.sw .chip{height:76px}
+.sw .meta{padding:10px 12px;font-size:13px}
+.sw .name{font-weight:700} .sw .hex{color:var(--gray-500);font-variant-numeric:tabular-nums}
+/* buttons */
+.btn{font-family:var(--font-sans);font-weight:600;font-size:15px;border-radius:var(--radius);padding:12px 22px;border:1.5px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:var(--apfm-coral);color:#fff}
+.btn-primary:hover{background:var(--apfm-coral-dark)}
+.btn-secondary{background:var(--apfm-navy);color:#fff}
+.btn-outline{background:transparent;border-color:var(--apfm-navy);color:var(--apfm-navy)}
+.btn-text{background:none;border:none;color:var(--apfm-blue);font-weight:700;padding:12px 6px}
+/* chips */
+.chipst{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;font-size:13px;font-weight:700}
+.c-succ{background:#EAF3EE;color:#2E6B50} .c-warn{background:#FBF0DC;color:#9A6B18} .c-dang{background:#F7E4E0;color:#9E3D2C} .c-info{background:var(--apfm-navy-tint);color:var(--apfm-navy)}
+/* type scale rows */
+.trow{display:flex;align-items:baseline;gap:20px;padding:12px 0;border-bottom:1px dashed var(--apfm-sand)}
+.trow .lbl{width:150px;color:var(--gray-500);font-size:13px;flex:none}
+/* kpi */
+.kpi .k-label{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-500)}
+.kpi .k-num{font-family:var(--font-display);font-weight:600;font-size:40px;color:var(--apfm-navy);line-height:1.1;margin:6px 0 4px;font-variant-numeric:tabular-nums}
+.kpi.dark{background:var(--apfm-navy);border-color:var(--apfm-navy)}
+.kpi.dark .k-label{color:#A9C2D1} .kpi.dark .k-num{color:#fff}
+.delta{font-size:13px;font-weight:700}
+.up{color:var(--success)} .down{color:var(--danger)}
+.kpi.dark .up{color:#7FD3AC}
+/* table */
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:var(--radius);overflow:hidden}
+th,td{text-align:left;padding:14px 16px;font-size:14px;border-bottom:1px solid var(--gray-100)}
+th{background:var(--apfm-cream);font-weight:700;color:var(--gray-700);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.bar{height:8px;border-radius:999px;background:var(--gray-100);overflow:hidden;width:120px;display:inline-block;vertical-align:middle}
+.bar>span{display:block;height:100%;border-radius:999px}
+/* topbar sample */
+.topbar{background:var(--apfm-navy);border-radius:var(--radius-lg);padding:16px 22px;display:flex;align-items:center;gap:20px;color:#fff}
+.brandmark{font-family:var(--font-display);font-weight:600;font-size:20px;color:#fff;display:flex;align-items:center;gap:10px}
+.dot{width:26px;height:26px;border-radius:50%;background:var(--apfm-coral);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:15px;color:#fff}
+.navlink{color:#C6D6E0;font-size:14px;font-weight:600}
+.navlink.active{color:#fff}
+.ban{background:#fff;border:1px solid var(--gray-100);border-left:4px solid var(--danger);border-radius:var(--radius);padding:12px 16px;font-size:14px}
+.ok{border-left-color:var(--success)}
+.badge{display:inline-block;background:var(--apfm-apricot);color:#6b4e17;font-weight:700;font-size:12px;padding:3px 10px;border-radius:999px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">A Place for Mom · Design Profile</div>
+  <div class="display">Where love finds its place.</div>
+  <p class="lead" style="margin-top:14px">The visual language for <strong>Stella</strong> — APFM's facility occupancy &amp; revenue agent. Warm, human, and trustworthy like the APFM consumer brand, but calm and operational for providers. Built from the live site and the Nov 2025 brand refresh.</p>
+
+  <section>
+    <h2>Color</h2>
+    <h3 style="font-family:var(--font-sans);font-weight:800;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-500)">Brand core</h3>
+    <div class="grid g4" style="margin:14px 0 8px">
+      <div class="sw"><div class="chip" style="background:#333333"></div><div class="meta"><div class="name">Ink</div><div class="hex">#333333</div></div></div>
+      <div class="sw"><div class="chip" style="background:#1F3D54"></div><div class="meta"><div class="name">Nile Blue</div><div class="hex">#1F3D54</div></div></div>
+      <div class="sw"><div class="chip" style="background:#6C9BB8"></div><div class="meta"><div class="name">Dove Blue</div><div class="hex">#6C9BB8</div></div></div>
+      <div class="sw"><div class="chip" style="background:#E7EFF4"></div><div class="meta"><div class="name">Navy Tint</div><div class="hex">#E7EFF4</div></div></div>
+    </div>
+    <h3 style="font-family:var(--font-sans);font-weight:800;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-500);margin-top:22px">Warm accents</h3>
+    <div class="grid g4" style="margin:14px 0 8px">
+      <div class="sw"><div class="chip" style="background:#E4735E"></div><div class="meta"><div class="name">Coral (CTA)</div><div class="hex">#E4735E</div></div></div>
+      <div class="sw"><div class="chip" style="background:#F4C77B"></div><div class="meta"><div class="name">Apricot</div><div class="hex">#F4C77B</div></div></div>
+      <div class="sw"><div class="chip" style="background:#FBF7F1"></div><div class="meta"><div class="name">Cream (bg)</div><div class="hex">#FBF7F1</div></div></div>
+      <div class="sw"><div class="chip" style="background:#F1E8DA"></div><div class="meta"><div class="name">Sand</div><div class="hex">#F1E8DA</div></div></div>
+    </div>
+    <h3 style="font-family:var(--font-sans);font-weight:800;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-500);margin-top:22px">Support &amp; semantic</h3>
+    <div class="grid g4" style="margin:14px 0 8px">
+      <div class="sw"><div class="chip" style="background:#6FA890"></div><div class="meta"><div class="name">Sage</div><div class="hex">#6FA890</div></div></div>
+      <div class="sw"><div class="chip" style="background:#3F8E6C"></div><div class="meta"><div class="name">Success</div><div class="hex">#3F8E6C</div></div></div>
+      <div class="sw"><div class="chip" style="background:#E0A23B"></div><div class="meta"><div class="name">Warning</div><div class="hex">#E0A23B</div></div></div>
+      <div class="sw"><div class="chip" style="background:#C4503B"></div><div class="meta"><div class="name">Danger</div><div class="hex">#C4503B</div></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Typography</h2>
+    <div class="card">
+      <div class="trow"><div class="lbl">Display · Fraunces 600</div><div class="display" style="font-size:40px">Fill the right units.</div></div>
+      <div class="trow"><div class="lbl">H1 · Fraunces 600</div><div style="font-family:var(--font-display);font-size:32px;color:var(--apfm-navy);font-weight:600">Demand you can actually serve</div></div>
+      <div class="trow"><div class="lbl">H2 · Fraunces 500</div><div style="font-family:var(--font-display);font-size:24px;color:var(--apfm-navy);font-weight:500">Occupancy &amp; revenue, one view</div></div>
+      <div class="trow"><div class="lbl">Body · Mulish 400</div><div style="font-size:16px">Stella reads each community's live capacity, open units, and staffing, then routes only the demand a provider can genuinely take.</div></div>
+      <div class="trow"><div class="lbl">Label · Mulish 700</div><div style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-500)">Memory care · Building A</div></div>
+      <div class="trow" style="border:0"><div class="lbl">Data · Fraunces 600</div><div style="font-family:var(--font-display);font-weight:600;font-size:34px;color:var(--apfm-navy);font-variant-numeric:tabular-nums">92.4%</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Buttons &amp; chips</h2>
+    <div class="card" style="display:flex;flex-wrap:wrap;gap:14px;align-items:center">
+      <button class="btn btn-primary">Accept matched demand</button>
+      <button class="btn btn-secondary">View community</button>
+      <button class="btn btn-outline">Export</button>
+      <button class="btn btn-text">See details →</button>
+      <span class="chipst c-succ">● 6 units open</span>
+      <span class="chipst c-warn">● Filling slowly</span>
+      <span class="chipst c-dang">● Can't serve</span>
+      <span class="chipst c-info">● AL · Building A</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Stella in context</h2>
+    <p class="lead" style="margin-bottom:18px">A sample of the on-brand product surface — cream canvas, navy structure, coral used once, soft-serif numbers.</p>
+    <div class="topbar" style="margin-bottom:16px">
+      <div class="brandmark"><span class="dot">S</span> Stella</div>
+      <span class="navlink active">Demand</span><span class="navlink">Occupancy</span><span class="navlink">Staffing</span><span class="navlink">Revenue</span>
+      <span style="margin-left:auto"><button class="btn btn-primary" style="padding:9px 16px;font-size:14px">+ Match demand</button></span>
+    </div>
+    <div class="grid g4" style="margin-bottom:16px">
+      <div class="card kpi dark"><div class="k-label">Occupancy</div><div class="k-num">92.4%</div><div class="delta up">▲ 2.6 pts vs. plan</div></div>
+      <div class="card kpi"><div class="k-label">Open units</div><div class="k-num">14</div><div class="delta muted">across 3 care types</div></div>
+      <div class="card kpi"><div class="k-label">Servable demand</div><div class="k-num">38</div><div class="delta up">▲ 11 this week</div></div>
+      <div class="card kpi"><div class="k-label">Revenue at risk</div><div class="k-num">$86k</div><div class="delta down">▼ unfilled memory care</div></div>
+    </div>
+    <div class="card" style="padding:0">
+      <table>
+        <thead><tr><th>Community</th><th>Care type</th><th class="num">Open</th><th>Fill velocity</th><th class="num">Matched demand</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Cedar Grove</td><td>Assisted Living</td><td class="num">6</td><td><span class="bar"><span style="width:78%;background:var(--success)"></span></span></td><td class="num">12</td><td><span class="chipst c-succ">On track</span></td></tr>
+          <tr><td>Cedar Grove</td><td>Memory Care</td><td class="num">4</td><td><span class="bar"><span style="width:32%;background:var(--warning)"></span></span></td><td class="num">3</td><td><span class="chipst c-warn">Filling slowly</span></td></tr>
+          <tr><td>Harbor Point</td><td>Independent</td><td class="num">2</td><td><span class="bar"><span style="width:64%;background:var(--apfm-blue)"></span></span></td><td class="num">9</td><td><span class="chipst c-info">Review</span></td></tr>
+          <tr><td>Harbor Point</td><td>Home Care (geo)</td><td class="num">—</td><td><span class="bar"><span style="width:12%;background:var(--danger)"></span></span></td><td class="num">14</td><td><span class="chipst c-dang">Can't serve</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Do / Don't — the "not Claudey" rules</h2>
+    <div class="grid g2">
+      <div>
+        <div class="ban ok" style="margin-bottom:10px"><strong>Do:</strong> warm cream canvas, soft-serif headlines, coral for the one key action.</div>
+        <div class="ban ok" style="margin-bottom:10px"><strong>Do:</strong> navy structure, sage/amber/coral semantics, generous whitespace.</div>
+        <div class="ban ok"><strong>Do:</strong> real photography for hero/testimonial moments; plain human copy.</div>
+      </div>
+      <div>
+        <div class="ban" style="margin-bottom:10px"><strong>Don't:</strong> purple/indigo, gradient "AI" glows, ✨ sparkle motifs.</div>
+        <div class="ban" style="margin-bottom:10px"><strong>Don't:</strong> default Inter/Roboto headlines, everything-pill-shaped, glassmorphism.</div>
+        <div class="ban"><strong>Don't:</strong> stark white full-page bg, dark-mode-by-default, emoji as icons.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" style="margin-top:56px">
+  <p class="muted" style="font-size:13px;margin-top:16px">Palette is an APFM-aligned derivation (Ink #333333 and the Dove/Nile Blue names are confirmed; exact brand-guide hexes to be swapped in if available). Type pairing recommended to match the brand's empathetic/editorial voice. Fonts: Fraunces + Mulish (Google Fonts).</p>
+
+</div>
+</body>
+</html>

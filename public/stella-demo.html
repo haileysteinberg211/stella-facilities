@@ -510,6 +510,80 @@ document.getElementById("fly").addEventListener("click",e=>{
   flyNoteT.textContent=FLY[i][0]+":";
   flyNoteD.textContent=" "+FLY[i][1];
 });
+
+/* ---------------- presenter mode: self-playing walkthrough ---------------- */
+(function(){
+  const st=document.createElement("style");
+  st.textContent=`
+   #pvBar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--coral);z-index:80}
+   #pvPlay{position:fixed;right:22px;bottom:22px;z-index:70;background:var(--coral);color:#fff;border:none;border-radius:999px;padding:13px 20px;font-family:var(--sans);font-weight:800;font-size:14px;box-shadow:var(--shadow);cursor:pointer}
+   #pvPlay:hover{background:var(--coral-dark)}
+   #pvCap{position:fixed;left:24px;bottom:24px;max-width:440px;z-index:75;background:var(--navy);color:#fff;border-radius:var(--radius-lg);box-shadow:0 16px 40px rgba(31,61,84,.3);padding:18px 22px 18px 20px;opacity:0;transform:translateY(12px);transition:.35s;pointer-events:none}
+   #pvCap.show{opacity:1;transform:none;pointer-events:auto}
+   #pvCap .e{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--apricot)}
+   #pvCap .t{font-family:var(--display);font-weight:600;font-size:20px;margin:4px 0 4px;color:#fff}
+   #pvCap .l{font-size:14px;color:#C6D6E0}
+   #pvCap .x{position:absolute;top:10px;right:12px;background:transparent;border:none;color:#9FB4C2;font-size:15px;cursor:pointer}
+   #pvTitle{position:fixed;inset:0;z-index:78;background:rgba(24,42,52,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px;opacity:0;pointer-events:none;transition:.45s;padding:40px}
+   #pvTitle.show{opacity:1}
+   #pvTitle .e{font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--coral)}
+   #pvTitle .t{font-family:var(--display);font-weight:600;font-size:52px;color:#fff;line-height:1.1;max-width:18ch}
+   #pvTitle .s{font-size:17px;color:#C6D6E0;max-width:52ch}
+   @media(max-width:640px){#pvTitle .t{font-size:34px}#pvCap{left:12px;right:12px;bottom:12px;max-width:none}}
+  `;
+  document.head.appendChild(st);
+
+  const bar=document.createElement("div"); bar.id="pvBar";
+  const play=document.createElement("button"); play.id="pvPlay"; play.innerHTML="▶ Play walkthrough";
+  const cap=document.createElement("div"); cap.id="pvCap"; cap.innerHTML='<button class="x">✕</button><div class="e"></div><div class="t"></div><div class="l"></div>';
+  const title=document.createElement("div"); title.id="pvTitle"; title.innerHTML='<div class="e"></div><div class="t"></div><div class="s"></div>';
+  [bar,play,cap,title].forEach(n=>document.body.appendChild(n));
+
+  const clickSel=s=>{const e=document.querySelector(s); if(e)e.click();};
+  const hoverMonth=i=>{const h=document.querySelectorAll(".fcHit")[i]; if(h)h.dispatchEvent(new MouseEvent("mouseenter",{bubbles:true}));};
+  function cycleFly(){ [0,1,2,3].forEach((n,k)=>setTimeout(()=>{const e=document.querySelector('.fnode[data-i="'+n+'"]'); if(e)e.click();}, k*1550)); }
+
+  const ACTS=[
+   {kind:"title",eyebrow:"A Place for Mom · Stella",title:"The demand ↔ supply flywheel",sub:"A 40-second walkthrough",dur:3400,to:0},
+   {eyebrow:"Problem 1 · Demand",title:"The top of the funnel is leaking",line:"Families now begin inside AI assistants — where APFM isn’t present.",dur:4200,to:"leak"},
+   {eyebrow:"The fix · Demand",title:"Get cited, then get transactable",line:"GEO makes APFM the source AI answers quote; an MCP lets them actually book.",dur:4800,to:"leak"},
+   {eyebrow:"Problem 2 · Supply",title:"The building is a black box",line:"Captured demand lands on buildings that can’t take it, and open units sit dark.",dur:4200,to:"blindspot"},
+   {eyebrow:"The engine we built",title:"Real-time capacity, unit by unit",line:"Every open unit flagged; incoming demand matched to what’s actually fillable.",dur:4800,to:"engine",act:()=>clickSel('#wingFilter [data-w="MC"]')},
+   {eyebrow:"The engine we built",title:"Forecast the next 12 months",line:"“No action” bleeds occupancy; “With Stella” closes the gap.",dur:5400,to:"#fcSvg",act:()=>{const b=document.querySelector('.scn[data-s="aggressive"]'); if(b&&!b.classList.contains("on"))b.click(); hoverMonth(6);}},
+   {eyebrow:"The unlock",title:"One fuels the other",line:"Demand intelligence and supply intelligence are a single compounding loop.",dur:7200,to:"flywheel",act:cycleFly},
+   {kind:"title",eyebrow:"The ask",title:"Fund the loop, not the leak.",sub:"Neither half survives alone — together they compound.",dur:4200,to:"bottom"},
+  ];
+
+  let idx=0, timer=null, playing=false;
+  function scrollTo_(to){
+    if(to===0){window.scrollTo({top:0,behavior:"smooth"});return;}
+    if(to==="bottom"){window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});return;}
+    const e=to[0]==="#"?document.querySelector(to):document.getElementById(to);
+    if(e){const y=e.getBoundingClientRect().top+window.pageYOffset-84; window.scrollTo({top:y,behavior:"smooth"});}
+  }
+  function showTitle(a){cap.classList.remove("show");title.querySelector(".e").textContent=a.eyebrow||"";title.querySelector(".t").textContent=a.title||"";title.querySelector(".s").textContent=a.sub||"";title.classList.add("show");}
+  function showCap(a){title.classList.remove("show");cap.querySelector(".e").textContent=a.eyebrow||"";cap.querySelector(".t").textContent=a.title||"";cap.querySelector(".l").textContent=a.line||"";cap.classList.add("show");}
+  function animateBar(dur){bar.style.transition="none";bar.style.width=(idx/ACTS.length*100)+"%";requestAnimationFrame(()=>{bar.style.transition="width "+dur+"ms linear";bar.style.width=((idx+1)/ACTS.length*100)+"%";});}
+  function runAct(){
+    if(!playing)return;
+    if(idx>=ACTS.length){stop();return;}
+    const a=ACTS[idx];
+    scrollTo_(a.to);
+    animateBar(a.dur);
+    setTimeout(()=>{ if(!playing)return; a.kind==="title"?showTitle(a):showCap(a); if(a.act){try{a.act();}catch(e){}} },480);
+    timer=setTimeout(()=>{idx++;runAct();}, a.dur);
+  }
+  function start(){
+    playing=true; idx=0; play.innerHTML="■ Stop tour"; bar.style.width="0";
+    clickSel('#wingFilter [data-w="all"]');
+    const agg=document.querySelector('.scn[data-s="aggressive"]'); if(agg&&agg.classList.contains("on"))agg.click();
+    runAct();
+  }
+  function stop(){playing=false;clearTimeout(timer);cap.classList.remove("show");title.classList.remove("show");bar.style.width="0";play.innerHTML="▶ Play walkthrough";}
+  play.addEventListener("click",()=>playing?stop():start());
+  cap.querySelector(".x").addEventListener("click",stop);
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")stop();});
+})();
 </script>
 </body>
 </html>

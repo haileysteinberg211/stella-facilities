@@ -9,14 +9,20 @@ const intentColor = {
   "inquiry":       "bg-gray-100 text-gray-600 border-gray-200",
 };
 
+const intentStyle = {
+  "deposit-ready": { background: "#F0FAF9", color: "#2a7d75", border: "1px solid #5BBFB5" },
+  "tour-booked":   { background: "#EEF0FB", color: "#4A52C8", border: "1px solid #b0b5e8" },
+  "inquiry":       { background: "#F5F1EB", color: "#7A7A8C", border: "1px solid #E8E4DC" },
+};
+
 function FitBar({ score }) {
-  const color = score >= 80 ? "bg-green-500" : score >= 60 ? "bg-violet-500" : "bg-amber-400";
+  const barColor = score >= 80 ? "#5BBFB5" : score >= 60 ? "#C97B1A" : "#B23A48";
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-        <div className={`h-full ${color} rounded-full`} style={{ width: `${score}%` }} />
+    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <div style={{ flex: 1, height: 6, background: "#F5F1EB", borderRadius: 999, overflow: "hidden" }}>
+        <div style={{ height: "100%", width: `${score}%`, background: barColor, borderRadius: 999 }} />
       </div>
-      <span className="text-xs font-semibold text-gray-700 w-6 text-right">{score}</span>
+      <span style={{ fontSize: 11, fontWeight: 700, color: "#1C1C2E", width: 24, textAlign: "right", fontFamily: "Georgia, 'Times New Roman', serif" }}>{score}</span>
     </div>
   );
 }
@@ -43,27 +49,27 @@ export default function LeadPipeline() {
     <div className="max-w-7xl mx-auto px-6 py-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900">Incoming Demand</h2>
-          <p className="text-sm text-gray-500 mt-0.5">{families.length} APFM families · ranked by best unit fit</p>
+          <h2 style={{ fontSize: 22, fontWeight: 700, color: "#1C1C2E", fontFamily: "Georgia, 'Times New Roman', serif", margin: 0 }}>Incoming Demand</h2>
+          <p style={{ fontSize: 14, color: "#7A7A8C", marginTop: 4, marginBottom: 0 }}>{families.length} APFM families · ranked by best unit fit</p>
         </div>
-        <div className="text-xs text-gray-500 bg-violet-50 border border-violet-100 px-3 py-1.5 rounded-lg">
+        <div style={{ fontSize: 12, color: "#7A7A8C", background: "#F0FAF9", border: "1px solid #5BBFB5", padding: "6px 14px", borderRadius: 999 }}>
           Fit scores computed against open units only
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-xl overflow-x-auto">
+      <div style={{ background: "#fff", border: "1px solid #E8E4DC", borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         <table className="w-full text-sm min-w-[860px]">
           <thead>
-            <tr className="border-b border-gray-100 bg-gray-50">
-              <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">#</th>
-              <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Family</th>
-              <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Care need</th>
-              <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Intent</th>
-              <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Budget</th>
-              <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Move-in</th>
-              <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Best unit</th>
-              <th className="text-left text-xs font-medium text-gray-500 px-4 py-3">Concession</th>
-              <th className="text-left text-xs font-medium text-gray-500 px-4 py-3 w-28">Fit score</th>
+            <tr style={{ borderBottom: "1px solid #E8E4DC", background: "#F5F1EB" }}>
+              <th style={{ textAlign: "left", fontSize: 11, fontWeight: 600, color: "#7A7A8C", padding: "10px 16px", letterSpacing: "0.05em", textTransform: "uppercase", fontFamily: "Georgia, 'Times New Roman', serif" }}>#</th>
+              <th style={{ textAlign: "left", fontSize: 11, fontWeight: 600, color: "#7A7A8C", padding: "10px 16px", letterSpacing: "0.05em", textTransform: "uppercase", fontFamily: "Georgia, 'Times New Roman', serif" }}>Family</th>
+              <th style={{ textAlign: "left", fontSize: 11, fontWeight: 600, color: "#7A7A8C", padding: "10px 16px", letterSpacing: "0.05em", textTransform: "uppercase", fontFamily: "Georgia, 'Times New Roman', serif" }}>Care need</th>
+              <th style={{ textAlign: "left", fontSize: 11, fontWeight: 600, color: "#7A7A8C", padding: "10px 16px", letterSpacing: "0.05em", textTransform: "uppercase", fontFamily: "Georgia, 'Times New Roman', serif" }}>Intent</th>
+              <th style={{ textAlign: "left", fontSize: 11, fontWeight: 600, color: "#7A7A8C", padding: "10px 16px", letterSpacing: "0.05em", textTransform: "uppercase", fontFamily: "Georgia, 'Times New Roman', serif" }}>Budget</th>
+              <th style={{ textAlign: "left", fontSize: 11, fontWeight: 600, color: "#7A7A8C", padding: "10px 16px", letterSpacing: "0.05em", textTransform: "uppercase", fontFamily: "Georgia, 'Times New Roman', serif" }}>Move-in</th>
+              <th style={{ textAlign: "left", fontSize: 11, fontWeight: 600, color: "#7A7A8C", padding: "10px 16px", letterSpacing: "0.05em", textTransform: "uppercase", fontFamily: "Georgia, 'Times New Roman', serif" }}>Best unit</th>
+              <th style={{ textAlign: "left", fontSize: 11, fontWeight: 600, color: "#7A7A8C", padding: "10px 16px", letterSpacing: "0.05em", textTransform: "uppercase", fontFamily: "Georgia, 'Times New Roman', serif" }}>Concession</th>
+              <th style={{ textAlign: "left", fontSize: 11, fontWeight: 600, color: "#7A7A8C", padding: "10px 16px", letterSpacing: "0.05em", textTransform: "uppercase", fontFamily: "Georgia, 'Times New Roman', serif", width: 112 }}>Fit score</th>
             </tr>
           </thead>
           <tbody>
@@ -72,15 +78,23 @@ export default function LeadPipeline() {
               const unit = best ? units.find(u => u.id === best.unit.id) : null;
               const noCapacity = !best;
               return (
-                <tr key={f.id} className={`border-b border-gray-50 transition-colors ${noCapacity ? "opacity-50" : "hover:bg-gray-50"}`}>
-                  <td className="px-4 py-3">
-                    <div className={`w-6 h-6 rounded-full text-xs font-semibold flex items-center justify-center ${noCapacity ? "bg-gray-100 text-gray-400" : "bg-violet-100 text-violet-700"}`}>
+                <tr key={f.id} style={{ borderBottom: "1px solid #E8E4DC", opacity: noCapacity ? 0.5 : 1, transition: "background 0.1s" }}
+                  onMouseEnter={e => { if (!noCapacity) e.currentTarget.style.background = "#FAF8F4"; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = ""; }}
+                >
+                  <td style={{ padding: "12px 16px" }}>
+                    <div style={{
+                      width: 24, height: 24, borderRadius: "50%", fontSize: 11, fontWeight: 700,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      background: noCapacity ? "#F5F1EB" : "#E8F8F7",
+                      color: noCapacity ? "#7A7A8C" : "#2a7d75",
+                    }}>
                       {i + 1}
                     </div>
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="font-medium text-gray-900">{f.name}</div>
-                    <div className="flex items-center gap-1.5 mt-0.5">
+                  <td style={{ padding: "12px 16px" }}>
+                    <div style={{ fontWeight: 600, color: "#1C1C2E", fontFamily: "Georgia, 'Times New Roman', serif" }}>{f.name}</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 2 }}>
                       {f.channel && (
                         <span style={{
                           display: "inline-flex", alignItems: "center", gap: 4,
@@ -92,48 +106,48 @@ export default function LeadPipeline() {
                           {f.channel}
                         </span>
                       )}
-                      <div className="text-xs text-gray-400 truncate max-w-xs">{f.notes}</div>
+                      <span style={{ fontSize: 11, color: "#7A7A8C", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 200 }}>{f.notes}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3">
-                    <span className="text-xs text-gray-700">{f.careNeed}</span>
+                  <td style={{ padding: "12px 16px" }}>
+                    <span style={{ fontSize: 13, color: "#3D3D4E" }}>{f.careNeed}</span>
                   </td>
-                  <td className="px-4 py-3">
-                    <span className={`text-xs px-2 py-0.5 rounded border ${intentColor[f.intent]}`}>
+                  <td style={{ padding: "12px 16px" }}>
+                    <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 8px", borderRadius: 999, ...intentStyle[f.intent] }}>
                       {intentLabel[f.intent]}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="font-medium text-gray-900">${f.monthlyBudget.toLocaleString()}</div>
+                  <td style={{ padding: "12px 16px" }}>
+                    <div style={{ fontWeight: 600, color: "#1C1C2E", fontFamily: "Georgia, 'Times New Roman', serif" }}>${f.monthlyBudget.toLocaleString()}</div>
                     {unit && (
-                      <div className={`text-xs mt-0.5 ${f.monthlyBudget >= unit.monthlyPrice ? "text-green-600" : best?.isConcessionCandidate ? "text-amber-600" : "text-red-500"}`}>
+                      <div style={{ fontSize: 11, marginTop: 2, color: f.monthlyBudget >= unit.monthlyPrice ? "#2a7d75" : best?.isConcessionCandidate ? "#C97B1A" : "#B23A48" }}>
                         {f.monthlyBudget >= unit.monthlyPrice ? "Fits list price" : `$${(unit.monthlyPrice - f.monthlyBudget).toLocaleString()} under`}
                       </div>
                     )}
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="text-gray-900">{f.urgencyDays}d</div>
-                    <div className="text-xs text-gray-400">{f.distanceMiles} mi</div>
+                  <td style={{ padding: "12px 16px" }}>
+                    <div style={{ color: "#1C1C2E", fontFamily: "Georgia, 'Times New Roman', serif" }}>{f.urgencyDays}d</div>
+                    <div style={{ fontSize: 11, color: "#7A7A8C" }}>{f.distanceMiles} mi</div>
                   </td>
-                  <td className="px-4 py-3">
+                  <td style={{ padding: "12px 16px" }}>
                     {unit ? (
                       <div>
-                        <div className="font-medium text-gray-900">{unit.id}</div>
-                        <div className="text-xs text-gray-500">${unit.monthlyPrice.toLocaleString()}/mo</div>
+                        <div style={{ fontWeight: 600, color: "#1C1C2E", fontFamily: "Georgia, 'Times New Roman', serif" }}>{unit.id}</div>
+                        <div style={{ fontSize: 11, color: "#7A7A8C" }}>${unit.monthlyPrice.toLocaleString()}/mo</div>
                       </div>
                     ) : (
-                      <span className="text-xs text-red-500 font-medium">No capacity</span>
+                      <span style={{ fontSize: 12, fontWeight: 600, color: "#B23A48" }}>No capacity</span>
                     )}
                   </td>
-                  <td className="px-4 py-3">
+                  <td style={{ padding: "12px 16px" }}>
                     {best?.isConcessionCandidate && (
-                      <div className="text-xs text-amber-700 mb-1">💳 suggest credit</div>
+                      <div style={{ fontSize: 11, color: "#C97B1A", marginBottom: 4 }}>💳 suggest credit</div>
                     )}
-                    {best ? <FitBar score={best.score} /> : <span className="text-xs text-gray-400">—</span>}
+                    {best ? <FitBar score={best.score} /> : <span style={{ fontSize: 12, color: "#7A7A8C" }}>—</span>}
                   </td>
-                  <td className="px-4 py-3">
+                  <td style={{ padding: "12px 16px" }}>
                     {best?.isConcessionCandidate && (
-                      <div className="text-xs text-amber-700 mb-1">💳</div>
+                      <div style={{ fontSize: 11, color: "#C97B1A" }}>💳</div>
                     )}
                   </td>
                 </tr>
@@ -143,8 +157,8 @@ export default function LeadPipeline() {
         </table>
       </div>
 
-      <div className="bg-violet-50 border border-violet-100 rounded-xl p-4 text-sm text-gray-700">
-        <span className="font-medium">How fit scores work:</span> Stella scores each family against each compatible open unit across budget fit (40 pts), urgency (25 pts), intent signal (20 pts), and geography (15 pts). Families marked "No capacity" have a care need with no open units — those leads should not receive spend.
+      <div style={{ background: "#F0FAF9", border: "1px solid #5BBFB5", borderRadius: 16, padding: "16px 20px", fontSize: 14, color: "#3D3D4E" }}>
+        <span style={{ fontWeight: 700, fontFamily: "Georgia, 'Times New Roman', serif", color: "#1C1C2E" }}>How fit scores work:</span> Stella scores each family against each compatible open unit across budget fit (40 pts), urgency (25 pts), intent signal (20 pts), and geography (15 pts). Families marked "No capacity" have a care need with no open units — those leads should not receive spend.
       </div>
     </div>
   );

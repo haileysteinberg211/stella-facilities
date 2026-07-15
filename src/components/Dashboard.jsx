@@ -6,15 +6,16 @@ const rec = computeRecommendations();
 
 const card = {
   background: "#fff",
-  borderRadius: 12,
-  border: "1px solid #e8e9eb",
-  padding: "18px 20px",
+  borderRadius: 16,
+  border: "1px solid #E8E4DC",
+  padding: "24px",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
 };
 
 const intentBadge = {
-  "deposit-ready": { bg: "#f0fdf4", color: "#15803d", border: "#bbf7d0" },
-  "tour-booked":   { bg: "#faf5ff", color: "#7c3aed", border: "#e9d5ff" },
-  "inquiry":       { bg: "#f9fafb", color: "#6b7280", border: "#e5e7eb" },
+  "deposit-ready": { bg: "#F0FAF9", color: "#2a7d75", border: "#5BBFB5" },
+  "tour-booked":   { bg: "#EEF0FB", color: "#4A52C8", border: "#b0b5e8" },
+  "inquiry":       { bg: "#F5F1EB", color: "#7A7A8C", border: "#E8E4DC" },
 };
 
 const intentLabel = {
@@ -26,9 +27,9 @@ const intentLabel = {
 function Kpi({ label, value, sub, valueColor, children }) {
   return (
     <div style={card}>
-      <div style={{ fontSize: 12, color: "#9ca3af", fontWeight: 500, marginBottom: 6, letterSpacing: "0.02em", textTransform: "uppercase" }}>{label}</div>
-      <div style={{ fontSize: 28, fontWeight: 700, color: valueColor || "#111", lineHeight: 1, marginBottom: 4 }}>{value}</div>
-      {sub && <div style={{ fontSize: 12, color: "#9ca3af" }}>{sub}</div>}
+      <div style={{ fontSize: 11, color: "#7A7A8C", fontWeight: 600, marginBottom: 8, letterSpacing: "0.07em", textTransform: "uppercase", fontFamily: "Georgia, 'Times New Roman', serif" }}>{label}</div>
+      <div style={{ fontSize: 30, fontWeight: 700, color: valueColor || "#1C1C2E", lineHeight: 1, marginBottom: 4, fontFamily: "Georgia, 'Times New Roman', serif" }}>{value}</div>
+      {sub && <div style={{ fontSize: 12, color: "#7A7A8C" }}>{sub}</div>}
       {children}
     </div>
   );
@@ -38,7 +39,7 @@ function OccBar({ pct, target }) {
   return (
     <div style={{ marginTop: 10 }}>
       <div style={{ position: "relative", height: 6, background: "#f3f4f6", borderRadius: 99 }}>
-        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${pct}%`, background: "#7c3aed", borderRadius: 99 }} />
+        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${pct}%`, background: "#5BBFB5", borderRadius: 99 }} />
         <div style={{ position: "absolute", top: -2, bottom: -2, width: 2, background: "#d1d5db", borderRadius: 1, left: `${target}%` }} />
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
@@ -51,10 +52,10 @@ function OccBar({ pct, target }) {
 
 function ActionRow({ icon, color, title, detail, tag, tagColor }) {
   const colors = {
-    red:    { border: "#fca5a5", bg: "#fff5f5" },
-    violet: { border: "#c4b5fd", bg: "#faf5ff" },
-    amber:  { border: "#fcd34d", bg: "#fffbeb" },
-    blue:   { border: "#93c5fd", bg: "#eff6ff" },
+    red:    { border: "#B23A48", bg: "#FFF5F5" },
+    violet: { border: "#5BBFB5", bg: "#F0FAF9" },
+    amber:  { border: "#C97B1A", bg: "#FFF8EE" },
+    blue:   { border: "#93c5fd", bg: "#EEF0FB" },
   };
   const c = colors[color] || colors.violet;
   return (
@@ -68,7 +69,7 @@ function ActionRow({ icon, color, title, detail, tag, tagColor }) {
       <span style={{ fontSize: 16, flexShrink: 0, marginTop: 2 }}>{icon}</span>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#111" }}>{title}</div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "#1C1C2E", fontFamily: "Georgia, 'Times New Roman', serif" }}>{title}</div>
           {tag && (
             <div style={{
               fontSize: 11, fontWeight: 600, color: tagColor || "#15803d",
@@ -78,7 +79,7 @@ function ActionRow({ icon, color, title, detail, tag, tagColor }) {
             }}>{tag}</div>
           )}
         </div>
-        <div style={{ fontSize: 12, color: "#6b7280", lineHeight: 1.5, marginTop: 2 }}>{detail}</div>
+        <div style={{ fontSize: 12, color: "#3D3D4E", lineHeight: 1.5, marginTop: 2 }}>{detail}</div>
       </div>
     </div>
   );
@@ -147,28 +148,29 @@ Write a 3-sentence daily briefing. Lead with the occupancy miss. Name the top 2 
 
       {/* Hero alert banner */}
       <div style={{
-        background: "#fff8f8",
-        border: "1px solid #fca5a5",
-        borderRadius: 12,
+        background: "#FFF5F5",
+        border: "1px solid #B23A48",
+        borderRadius: 16,
         padding: "16px 20px",
         marginBottom: 20,
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         gap: 16,
+        boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <span style={{ fontSize: 20 }}>⚠️</span>
           <div>
-            <div style={{ fontWeight: 700, fontSize: 15, color: "#991b1b" }}>
+            <div style={{ fontWeight: 700, fontSize: 15, color: "#B23A48", fontFamily: "Georgia, 'Times New Roman', serif" }}>
               On track to miss occupancy target next month
             </div>
-            <div style={{ fontSize: 13, color: "#b91c1c", marginTop: 2 }}>
+            <div style={{ fontSize: 13, color: "#B23A48", marginTop: 2, opacity: 0.85 }}>
               Memory care: {mcOpen} units open, ~{projectedMCMoveIns} projected move-in — {occupancyGap} unit{occupancyGap !== 1 ? "s" : ""} likely to stay empty without action
             </div>
           </div>
         </div>
-        <div style={{ fontSize: 13, fontWeight: 700, color: "#991b1b", background: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 8, padding: "6px 14px", whiteSpace: "nowrap" }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: "#B23A48", background: "#fff", border: "1px solid #B23A48", borderRadius: 999, padding: "6px 16px", whiteSpace: "nowrap" }}>
           ${revenueAtRisk.toLocaleString()}/mo at risk
         </div>
       </div>
@@ -178,7 +180,7 @@ Write a 3-sentence daily briefing. Lead with the occupancy miss. Name the top 2 
         <Kpi label="Occupancy" value={`${(currentOccupancy * 100).toFixed(1)}%`} sub={`target ${community.targetOccupancy * 100}%`}>
           <OccBar pct={currentOccupancy * 100} target={community.targetOccupancy * 100} />
         </Kpi>
-        <Kpi label="Memory care open" value={mcOpen} valueColor="#dc2626" sub={`of ${community.careTypes.memoryCare.total} units`} />
+        <Kpi label="Memory care open" value={mcOpen} valueColor="#B23A48" sub={`of ${community.careTypes.memoryCare.total} units`} />
         <Kpi label="Revenue at risk" value={`$${revenueAtRisk.toLocaleString()}`} sub="per month, MC only" />
         <Kpi label="Inbound leads" value={families.length} sub={`${families.filter(f => f.careNeed === "Memory Care").length} memory care fits`} />
       </div>
@@ -186,7 +188,7 @@ Write a 3-sentence daily briefing. Lead with the occupancy miss. Name the top 2 
       {/* APFM MCP channel strip */}
       <div style={{ ...card, marginBottom: 16, padding: "12px 18px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.06em", flexShrink: 0 }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: "#7A7A8C", textTransform: "uppercase", letterSpacing: "0.06em", flexShrink: 0, fontFamily: "Georgia, 'Times New Roman', serif" }}>
             APFM MCP demand origin
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", flex: 1 }}>
@@ -205,7 +207,7 @@ Write a 3-sentence daily briefing. Lead with the occupancy miss. Name the top 2 
               </div>
             ))}
           </div>
-          <div style={{ fontSize: 11, color: "#9ca3af", flexShrink: 0 }}>
+          <div style={{ fontSize: 11, color: "#7A7A8C", flexShrink: 0 }}>
             {families.length} families routed via APFM MCP rails
           </div>
         </div>
@@ -216,20 +218,20 @@ Write a 3-sentence daily briefing. Lead with the occupancy miss. Name the top 2 
 
         {/* Left: Stella recommendations */}
         <div style={{ ...card, padding: 0, overflow: "hidden" }}>
-          <div style={{ padding: "16px 18px", borderBottom: "1px solid #f3f4f6", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+          <div style={{ padding: "16px 18px", borderBottom: "1px solid #E8E4DC", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <div style={{ width: 22, height: 22, borderRadius: 6, background: "linear-gradient(135deg, #7c3aed, #5b21b6)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ width: 22, height: 22, borderRadius: 6, background: "linear-gradient(135deg, #5BBFB5, #3a9e94)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <span style={{ color: "#fff", fontSize: 11, fontWeight: 700 }}>S</span>
               </div>
-              <span style={{ fontSize: 14, fontWeight: 600, color: "#111" }}>Stella recommends</span>
+              <span style={{ fontSize: 14, fontWeight: 700, color: "#1C1C2E", fontFamily: "Georgia, 'Times New Roman', serif" }}>Stella recommends</span>
             </div>
             <button
               onClick={runAgent}
               disabled={loading}
               style={{
-                fontSize: 12, fontWeight: 600, padding: "6px 14px",
-                borderRadius: 8, border: "none", cursor: loading ? "not-allowed" : "pointer",
-                background: loading ? "#ede9fe" : "#7c3aed", color: loading ? "#6d28d9" : "#fff",
+                fontSize: 12, fontWeight: 600, padding: "7px 18px",
+                borderRadius: 999, border: "none", cursor: loading ? "not-allowed" : "pointer",
+                background: loading ? "#c5c8ef" : "#4A52C8", color: "#fff",
                 transition: "all 0.15s", opacity: loading ? 0.7 : 1,
                 whiteSpace: "nowrap", flexShrink: 0,
               }}
@@ -239,23 +241,23 @@ Write a 3-sentence daily briefing. Lead with the occupancy miss. Name the top 2 
           </div>
 
           {showKeyInput && (
-            <div style={{ padding: "12px 20px", borderBottom: "1px solid #f3f4f6", display: "flex", gap: 8 }}>
+            <div style={{ padding: "12px 20px", borderBottom: "1px solid #E8E4DC", display: "flex", gap: 8 }}>
               <input
                 type="password"
                 placeholder="Paste your Anthropic API key"
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && runAgent()}
-                style={{ flex: 1, fontSize: 12, border: "1px solid #d1d5db", borderRadius: 8, padding: "7px 12px", outline: "none" }}
+                style={{ flex: 1, fontSize: 12, border: "1px solid #E8E4DC", borderRadius: 8, padding: "7px 12px", outline: "none" }}
               />
-              <button onClick={runAgent} style={{ fontSize: 12, fontWeight: 600, padding: "7px 14px", borderRadius: 8, border: "none", background: "#7c3aed", color: "#fff", cursor: "pointer" }}>Go</button>
+              <button onClick={runAgent} style={{ fontSize: 12, fontWeight: 600, padding: "7px 18px", borderRadius: 999, border: "none", background: "#4A52C8", color: "#fff", cursor: "pointer" }}>Go</button>
             </div>
           )}
 
           {agentText && (
-            <div style={{ margin: "16px 20px 0", padding: "14px 16px", background: "#faf5ff", border: "1px solid #e9d5ff", borderRadius: 10 }}>
-              <div style={{ fontSize: 11, fontWeight: 600, color: "#7c3aed", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>Live briefing</div>
-              <p style={{ fontSize: 13, color: "#374151", lineHeight: 1.6, margin: 0 }}>{agentText}</p>
+            <div style={{ margin: "16px 20px 0", padding: "14px 16px", background: "#F0FAF9", border: "1px solid #5BBFB5", borderRadius: 10 }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: "#2a7d75", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: "Georgia, 'Times New Roman', serif" }}>Live briefing</div>
+              <p style={{ fontSize: 13, color: "#3D3D4E", lineHeight: 1.6, margin: 0 }}>{agentText}</p>
             </div>
           )}
 
@@ -301,9 +303,9 @@ Write a 3-sentence daily briefing. Lead with the occupancy miss. Name the top 2 
 
         {/* Right: top leads */}
         <div style={{ ...card, padding: 0, overflow: "hidden" }}>
-          <div style={{ padding: "16px 18px 14px", borderBottom: "1px solid #f3f4f6" }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: "#111" }}>Top 5 memory care leads</div>
-            <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>ranked by fit score</div>
+          <div style={{ padding: "16px 18px 14px", borderBottom: "1px solid #E8E4DC" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#1C1C2E", fontFamily: "Georgia, 'Times New Roman', serif" }}>Top 5 memory care leads</div>
+            <div style={{ fontSize: 11, color: "#7A7A8C", marginTop: 2 }}>ranked by fit score</div>
           </div>
           <div style={{ padding: "8px 0" }}>
             {top5MC.map((m, i) => {
@@ -316,15 +318,15 @@ Write a 3-sentence daily briefing. Lead with the occupancy miss. Name the top 2 
                 }}>
                   <div style={{
                     width: 22, height: 22, borderRadius: "50%",
-                    background: "#f3f0ff", color: "#6d28d9",
+                    background: "#E8F8F7", color: "#2a7d75",
                     fontSize: 11, fontWeight: 700,
                     display: "flex", alignItems: "center", justifyContent: "center",
                     flexShrink: 0, marginTop: 2,
                   }}>{i + 1}</div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 4 }}>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: "#111", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{m.family.name}</span>
-                      <span style={{ fontSize: 14, fontWeight: 700, color: "#6d28d9", flexShrink: 0 }}>{m.score}</span>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: "#1C1C2E", fontFamily: "Georgia, 'Times New Roman', serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{m.family.name}</span>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: "#5BBFB5", flexShrink: 0 }}>{m.score}</span>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4, flexWrap: "wrap" }}>
                       <span style={{
@@ -345,7 +347,7 @@ Write a 3-sentence daily briefing. Lead with the occupancy miss. Name the top 2 
                           {m.family.channel}
                         </span>
                       )}
-                      <span style={{ fontSize: 11, color: "#9ca3af" }}>{m.family.urgencyDays}d · ${m.family.monthlyBudget.toLocaleString()}/mo</span>
+                      <span style={{ fontSize: 11, color: "#7A7A8C" }}>{m.family.urgencyDays}d · ${m.family.monthlyBudget.toLocaleString()}/mo</span>
                     </div>
                     {m.isConcessionCandidate && (
                       <div style={{ fontSize: 11, color: "#b45309", marginTop: 3 }}>💳 ${m.budgetGap} gap → offer credit</div>
@@ -355,7 +357,7 @@ Write a 3-sentence daily briefing. Lead with the occupancy miss. Name the top 2 
                       <div style={{
                         height: "100%", borderRadius: 99,
                         width: `${m.score}%`,
-                        background: m.score >= 85 ? "#7c3aed" : m.score >= 70 ? "#a78bfa" : "#c4b5fd",
+                        background: m.score >= 85 ? "#5BBFB5" : m.score >= 70 ? "#C97B1A" : "#B23A48",
                       }} />
                     </div>
                   </div>

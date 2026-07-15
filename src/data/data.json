@@ -69,6 +69,8 @@
       "urgencyDays": 12,
       "intent": "tour-booked",
       "distanceMiles": 4.2,
+      "channel": "ChatGPT",
+      "channelColor": "#10A37F",
       "notes": "Daughter is sole caregiver. Mother has moderate dementia. Ready to move immediately after tour."
     },
     {
@@ -79,6 +81,8 @@
       "urgencyDays": 18,
       "intent": "tour-booked",
       "distanceMiles": 7.1,
+      "channel": "Perplexity",
+      "channelColor": "#20808D",
       "notes": "Husband has early-stage Alzheimer's. Wife insists on semi-private to manage costs. $300 under best unit price."
     },
     {
@@ -89,6 +93,8 @@
       "urgencyDays": 30,
       "intent": "tour-booked",
       "distanceMiles": 9.8,
+      "channel": "Gemini",
+      "channelColor": "#4285F4",
       "notes": "Touring 3 communities. Strong preference for private room. Budget is flexible."
     },
     {
@@ -99,6 +105,8 @@
       "urgencyDays": 25,
       "intent": "inquiry",
       "distanceMiles": 11.3,
+      "channel": "ChatGPT",
+      "channelColor": "#10A37F",
       "notes": "Son is managing transition. Budget firm at $5,000. Needs semi-private. $200 under best unit price."
     },
     {
@@ -109,6 +117,8 @@
       "urgencyDays": 45,
       "intent": "tour-booked",
       "distanceMiles": 6.0,
+      "channel": "Claude",
+      "channelColor": "#7c3aed",
       "notes": "Referred by neurologist. Looking ahead, not urgent. High budget, strong fit for renovated unit."
     },
     {
@@ -119,6 +129,8 @@
       "urgencyDays": 60,
       "intent": "inquiry",
       "distanceMiles": 22.4,
+      "channel": "Gemini",
+      "channelColor": "#4285F4",
       "notes": "Budget well below memory care range. Not a fit without significant concession."
     },
     {
@@ -129,6 +141,8 @@
       "urgencyDays": 90,
       "intent": "inquiry",
       "distanceMiles": 18.7,
+      "channel": "Perplexity",
+      "channelColor": "#20808D",
       "notes": "Early planner. No urgency. Distance is a concern."
     },
     {
@@ -139,6 +153,8 @@
       "urgencyDays": 14,
       "intent": "deposit-ready",
       "distanceMiles": 3.5,
+      "channel": "Epic EHR",
+      "channelColor": "#B23A48",
       "notes": "Urgent. Deposit-ready. No AL units open — this lead cannot be housed."
     },
     {
@@ -149,6 +165,8 @@
       "urgencyDays": 21,
       "intent": "tour-booked",
       "distanceMiles": 5.8,
+      "channel": "ChatGPT",
+      "channelColor": "#10A37F",
       "notes": "Motivated family. No AL capacity until mid-August at earliest."
     },
     {
@@ -159,6 +177,8 @@
       "urgencyDays": 30,
       "intent": "tour-booked",
       "distanceMiles": 8.2,
+      "channel": "Gemini",
+      "channelColor": "#4285F4",
       "notes": "AL full. Lead spend here is wasted at current capacity."
     },
     {
@@ -169,6 +189,8 @@
       "urgencyDays": 45,
       "intent": "inquiry",
       "distanceMiles": 14.0,
+      "channel": "Perplexity",
+      "channelColor": "#20808D",
       "notes": "AL full. Low urgency."
     },
     {
@@ -179,6 +201,8 @@
       "urgencyDays": 20,
       "intent": "tour-booked",
       "distanceMiles": 2.1,
+      "channel": "Claude",
+      "channelColor": "#7c3aed",
       "notes": "IL unit available Aug 1. Close match if willing to wait 2 weeks."
     },
     {
@@ -189,6 +213,8 @@
       "urgencyDays": 35,
       "intent": "inquiry",
       "distanceMiles": 13.5,
+      "channel": "Epic EHR",
+      "channelColor": "#B23A48",
       "notes": "Moderate budget, moderate urgency. Fits MC-101 on care type and budget."
     },
     {
@@ -199,6 +225,8 @@
       "urgencyDays": 10,
       "intent": "deposit-ready",
       "distanceMiles": 5.5,
+      "channel": "Epic EHR",
+      "channelColor": "#B23A48",
       "notes": "Highest urgency in pipeline. Budget exceeds all open units. Best immediate close opportunity."
     },
     {
@@ -209,6 +237,8 @@
       "urgencyDays": 60,
       "intent": "inquiry",
       "distanceMiles": 20.0,
+      "channel": "ChatGPT",
+      "channelColor": "#10A37F",
       "notes": "AL full. Long timeline. Not a near-term conversion."
     }
   ]

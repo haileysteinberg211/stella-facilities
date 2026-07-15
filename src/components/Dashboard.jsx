@@ -102,6 +102,17 @@ export default function Dashboard() {
 
   const occupancyGap = mcOpen - projectedMCMoveIns;
 
+  // Channel breakdown for APFM MCP sources
+  const channelCounts = {};
+  const channelColors = {};
+  for (const f of families) {
+    if (f.channel) {
+      channelCounts[f.channel] = (channelCounts[f.channel] || 0) + 1;
+      channelColors[f.channel] = f.channelColor;
+    }
+  }
+  const channels = Object.entries(channelCounts).sort((a, b) => b[1] - a[1]);
+
   async function runAgent() {
     if (!apiKey) { setShowKeyInput(true); return; }
     setLoading(true); setCalled(true); setShowKeyInput(false);
@@ -170,6 +181,34 @@ Write a 3-sentence daily briefing. Lead with the occupancy miss. Name the top 2 
         <Kpi label="Memory care open" value={mcOpen} valueColor="#dc2626" sub={`of ${community.careTypes.memoryCare.total} units`} />
         <Kpi label="Revenue at risk" value={`$${revenueAtRisk.toLocaleString()}`} sub="per month, MC only" />
         <Kpi label="Inbound leads" value={families.length} sub={`${families.filter(f => f.careNeed === "Memory Care").length} memory care fits`} />
+      </div>
+
+      {/* APFM MCP channel strip */}
+      <div style={{ ...card, marginBottom: 16, padding: "12px 18px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.06em", flexShrink: 0 }}>
+            APFM MCP demand origin
+          </div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", flex: 1 }}>
+            {channels.map(([ch, count]) => (
+              <div key={ch} style={{
+                display: "flex", alignItems: "center", gap: 5,
+                fontSize: 12, fontWeight: 600,
+                padding: "4px 10px", borderRadius: 999,
+                background: channelColors[ch] + "14",
+                border: `1px solid ${channelColors[ch]}33`,
+                color: channelColors[ch],
+              }}>
+                <span style={{ width: 7, height: 7, borderRadius: "50%", background: channelColors[ch], display: "inline-block" }} />
+                {ch}
+                <span style={{ fontWeight: 400, color: channelColors[ch] + "cc", fontSize: 11 }}>{count}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{ fontSize: 11, color: "#9ca3af", flexShrink: 0 }}>
+            {families.length} families routed via APFM MCP rails
+          </div>
+        </div>
       </div>
 
       {/* Main 2-col layout */}
@@ -287,12 +326,25 @@ Write a 3-sentence daily briefing. Lead with the occupancy miss. Name the top 2 
                       <span style={{ fontSize: 13, fontWeight: 600, color: "#111", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{m.family.name}</span>
                       <span style={{ fontSize: 14, fontWeight: 700, color: "#6d28d9", flexShrink: 0 }}>{m.score}</span>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4, flexWrap: "wrap" }}>
                       <span style={{
                         fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4,
                         background: ib.bg, color: ib.color, border: `1px solid ${ib.border}`,
                         whiteSpace: "nowrap",
                       }}>{intentLabel[m.family.intent]}</span>
+                      {m.family.channel && (
+                        <span style={{
+                          display: "inline-flex", alignItems: "center", gap: 3,
+                          fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4,
+                          background: m.family.channelColor + "15",
+                          color: m.family.channelColor,
+                          border: `1px solid ${m.family.channelColor}33`,
+                          whiteSpace: "nowrap",
+                        }}>
+                          <span style={{ width: 5, height: 5, borderRadius: "50%", background: m.family.channelColor, display: "inline-block" }} />
+                          {m.family.channel}
+                        </span>
+                      )}
                       <span style={{ fontSize: 11, color: "#9ca3af" }}>{m.family.urgencyDays}d · ${m.family.monthlyBudget.toLocaleString()}/mo</span>
                     </div>
                     {m.isConcessionCandidate && (

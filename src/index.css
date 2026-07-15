@@ -1,12 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  background: #F5F1EB;
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  color: #E8E4DC;
+  min-height: 100vh;
+  background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=85');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
-#root { min-height: 100svh; }
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(8,12,20,0.82) 0%, rgba(13,20,35,0.78) 50%, rgba(5,18,25,0.85) 100%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+#root {
+  min-height: 100svh;
+  position: relative;
+  z-index: 1;
+}

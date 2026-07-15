@@ -8,8 +8,10 @@ export default function Header({ activeTab, setActiveTab }) {
 
   return (
     <header style={{
-      background: "#fff",
-      borderBottom: "1px solid #E8E4DC",
+      background: "rgba(8, 12, 20, 0.72)",
+      backdropFilter: "blur(20px)",
+      WebkitBackdropFilter: "blur(20px)",
+      borderBottom: "1px solid rgba(255,255,255,0.08)",
       position: "sticky",
       top: 0,
       zIndex: 50,
@@ -27,15 +29,15 @@ export default function Header({ activeTab, setActiveTab }) {
           <div style={{
             width: 28, height: 28,
             borderRadius: 8,
-            background: "linear-gradient(135deg, #5BBFB5, #3a9e94)",
+            background: "linear-gradient(135deg, #5BBFB5, #3A9E96)",
             display: "flex", alignItems: "center", justifyContent: "center",
             flexShrink: 0,
           }}>
             <span style={{ color: "#fff", fontSize: 12, fontWeight: 700 }}>S</span>
           </div>
-          <span style={{ fontWeight: 700, fontSize: 15, color: "#1C1C2E", fontFamily: "Georgia, 'Times New Roman', serif" }}>Stella</span>
-          <span style={{ color: "#E8E4DC", fontSize: 13 }}>·</span>
-          <span style={{ color: "#7A7A8C", fontSize: 13, fontFamily: "Georgia, 'Times New Roman', serif" }}>Maplewood Senior Living</span>
+          <span style={{ fontWeight: 700, fontSize: 17, color: "#E8E4DC", fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>Stella</span>
+          <span style={{ color: "#252B3B", fontSize: 13 }}>·</span>
+          <span style={{ color: "#8B8FA8", fontSize: 13, fontFamily: "'Inter', -apple-system, system-ui, sans-serif" }}>Maplewood Senior Living</span>
         </div>
         <nav style={{ display: "flex", gap: 2 }}>
           {tabs.map((t) => (
@@ -51,9 +53,9 @@ export default function Header({ activeTab, setActiveTab }) {
                 fontSize: 13,
                 fontWeight: activeTab === t.id ? 600 : 400,
                 background: "transparent",
-                color: activeTab === t.id ? "#1C1C2E" : "#7A7A8C",
+                color: activeTab === t.id ? "#5BBFB5" : "#8B8FA8",
                 transition: "all 0.15s",
-                fontFamily: "Georgia, 'Times New Roman', serif",
+                fontFamily: "'Inter', -apple-system, system-ui, sans-serif",
               }}
             >
               {t.label}

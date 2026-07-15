@@ -2,9 +2,10 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-// base: served under /stella-facilities/ on GitHub Pages (production build),
-// but at / during local dev so http://localhost:5173/ keeps working.
+// Relative base ('./') for production so the built app works anywhere —
+// GitHub Pages project subpath, Netlify root, or a double-clicked file.
+// Dev stays at '/' so http://localhost:5173/ keeps working.
 export default defineConfig(({ command }) => ({
-  base: command === 'build' ? '/stella-facilities/' : '/',
+  base: command === 'build' ? './' : '/',
   plugins: [react(), tailwindcss()],
 }))

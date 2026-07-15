@@ -10,7 +10,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{ minHeight: "100vh", background: "#FBF7F1" }}>
       <Header activeTab={activeTab} setActiveTab={setActiveTab} />
       <main>
         {activeTab === "dashboard" && <Dashboard />}

@@ -1,3 +1,5 @@
+import { t } from "../theme.js";
+
 export default function Header({ activeTab, setActiveTab }) {
   const tabs = [
     { id: "dashboard", label: "Dashboard" },
@@ -8,59 +10,85 @@ export default function Header({ activeTab, setActiveTab }) {
 
   return (
     <header style={{
-      background: "rgba(8, 12, 20, 0.72)",
-      backdropFilter: "blur(20px)",
-      WebkitBackdropFilter: "blur(20px)",
-      borderBottom: "1px solid rgba(255,255,255,0.08)",
+      background: t.navy,
       position: "sticky",
       top: 0,
       zIndex: 50,
+      width: "100%",
+      boxShadow: t.shadow,
     }}>
       <div style={{
-        maxWidth: 1200,
+        maxWidth: 1160,
         margin: "0 auto",
-        padding: "0 24px",
-        height: 52,
+        padding: "16px 22px",
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-between",
+        gap: 16,
       }}>
+        {/* Brandmark: coral dot + Stella wordmark */}
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{
-            width: 28, height: 28,
-            borderRadius: 8,
-            background: "linear-gradient(135deg, #5BBFB5, #3A9E96)",
-            display: "flex", alignItems: "center", justifyContent: "center",
+          <span style={{
+            width: 26,
+            height: 26,
+            borderRadius: "50%",
+            background: t.coral,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontFamily: t.display,
+            fontWeight: 600,
+            fontSize: 15,
+            color: t.white,
             flexShrink: 0,
-          }}>
-            <span style={{ color: "#fff", fontSize: 12, fontWeight: 700 }}>S</span>
-          </div>
-          <span style={{ fontWeight: 700, fontSize: 17, color: "#E8E4DC", fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>Stella</span>
-          <span style={{ color: "#252B3B", fontSize: 13 }}>·</span>
-          <span style={{ color: "#8B8FA8", fontSize: 13, fontFamily: "'Inter', -apple-system, system-ui, sans-serif" }}>Maplewood Senior Living</span>
+          }}>S</span>
+          <span style={{
+            fontFamily: t.display,
+            fontWeight: 600,
+            fontSize: 20,
+            color: t.white,
+          }}>Stella</span>
         </div>
-        <nav style={{ display: "flex", gap: 2 }}>
-          {tabs.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setActiveTab(t.id)}
-              style={{
-                padding: "5px 14px",
-                borderRadius: 6,
-                border: "none",
-                borderBottom: activeTab === t.id ? "2px solid #5BBFB5" : "2px solid transparent",
-                cursor: "pointer",
-                fontSize: 13,
-                fontWeight: activeTab === t.id ? 600 : 400,
-                background: "transparent",
-                color: activeTab === t.id ? "#5BBFB5" : "#8B8FA8",
-                transition: "all 0.15s",
-                fontFamily: "'Inter', -apple-system, system-ui, sans-serif",
-              }}
-            >
-              {t.label}
-            </button>
-          ))}
+
+        {/* Muted separator */}
+        <span aria-hidden="true" style={{
+          width: 1,
+          height: 20,
+          background: "rgba(198, 214, 224, 0.3)",
+          flexShrink: 0,
+        }} />
+
+        {/* Community */}
+        <span style={{
+          fontFamily: t.sans,
+          fontSize: 14,
+          color: "#C6D6E0",
+        }}>Maplewood Senior Living</span>
+
+        {/* Nav links, right-aligned */}
+        <nav style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 20 }}>
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  borderBottom: `2px solid ${isActive ? t.coral : "transparent"}`,
+                  padding: "6px 2px",
+                  cursor: "pointer",
+                  fontFamily: t.sans,
+                  fontWeight: 600,
+                  fontSize: 14,
+                  lineHeight: 1.4,
+                  color: isActive ? t.white : "#C6D6E0",
+                }}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
         </nav>
       </div>
     </header>

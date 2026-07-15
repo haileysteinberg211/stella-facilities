@@ -4,27 +4,81 @@ import Anthropic from "@anthropic-ai/sdk";
 
 const rec = computeRecommendations();
 
-const actionBorder = {
-  contact: "border-l-violet-500",
-  concession: "border-l-amber-500",
-  spend: "border-l-blue-500",
-  alert: "border-l-red-500",
+const card = {
+  background: "#fff",
+  borderRadius: 12,
+  border: "1px solid #e8e9eb",
+  padding: "18px 20px",
 };
 
-const actionIcon = { contact: "📞", concession: "💳", spend: "📉", alert: "⚠️" };
+const intentBadge = {
+  "deposit-ready": { bg: "#f0fdf4", color: "#15803d", border: "#bbf7d0" },
+  "tour-booked":   { bg: "#faf5ff", color: "#7c3aed", border: "#e9d5ff" },
+  "inquiry":       { bg: "#f9fafb", color: "#6b7280", border: "#e5e7eb" },
+};
 
-function OccupancyBar({ value, target }) {
+const intentLabel = {
+  "deposit-ready": "Deposit ready",
+  "tour-booked": "Tour booked",
+  "inquiry": "Inquiry",
+};
+
+function Kpi({ label, value, sub, valueColor, children }) {
   return (
-    <div>
-      <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden mt-2">
-        <div className="h-full rounded-full bg-violet-500 transition-all duration-700" style={{ width: `${value * 100}%` }} />
-        {target && (
-          <div className="absolute top-0 bottom-0 w-px bg-gray-400" style={{ left: `${target * 100}%` }} />
-        )}
+    <div style={card}>
+      <div style={{ fontSize: 12, color: "#9ca3af", fontWeight: 500, marginBottom: 6, letterSpacing: "0.02em", textTransform: "uppercase" }}>{label}</div>
+      <div style={{ fontSize: 28, fontWeight: 700, color: valueColor || "#111", lineHeight: 1, marginBottom: 4 }}>{value}</div>
+      {sub && <div style={{ fontSize: 12, color: "#9ca3af" }}>{sub}</div>}
+      {children}
+    </div>
+  );
+}
+
+function OccBar({ pct, target }) {
+  return (
+    <div style={{ marginTop: 10 }}>
+      <div style={{ position: "relative", height: 6, background: "#f3f4f6", borderRadius: 99 }}>
+        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${pct}%`, background: "#7c3aed", borderRadius: 99 }} />
+        <div style={{ position: "absolute", top: -2, bottom: -2, width: 2, background: "#d1d5db", borderRadius: 1, left: `${target}%` }} />
       </div>
-      <div className="flex justify-between text-xs text-gray-400 mt-1">
-        <span>{(value * 100).toFixed(1)}%</span>
-        <span>target {(target * 100).toFixed(0)}%</span>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
+        <span style={{ fontSize: 11, color: "#6b7280" }}>{pct.toFixed(1)}%</span>
+        <span style={{ fontSize: 11, color: "#9ca3af" }}>target {target}%</span>
+      </div>
+    </div>
+  );
+}
+
+function ActionRow({ icon, color, title, detail, tag, tagColor }) {
+  const colors = {
+    red:    { border: "#fca5a5", bg: "#fff5f5" },
+    violet: { border: "#c4b5fd", bg: "#faf5ff" },
+    amber:  { border: "#fcd34d", bg: "#fffbeb" },
+    blue:   { border: "#93c5fd", bg: "#eff6ff" },
+  };
+  const c = colors[color] || colors.violet;
+  return (
+    <div style={{
+      display: "flex", alignItems: "flex-start", gap: 10,
+      padding: "12px 14px",
+      borderRadius: 10,
+      border: `1px solid ${c.border}`,
+      background: c.bg,
+    }}>
+      <span style={{ fontSize: 16, flexShrink: 0, marginTop: 2 }}>{icon}</span>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "#111" }}>{title}</div>
+          {tag && (
+            <div style={{
+              fontSize: 11, fontWeight: 600, color: tagColor || "#15803d",
+              background: tagColor === "#b45309" ? "#fffbeb" : tagColor === "#1d4ed8" ? "#eff6ff" : "#f0fdf4",
+              border: `1px solid ${tagColor === "#b45309" ? "#fde68a" : tagColor === "#1d4ed8" ? "#bfdbfe" : "#bbf7d0"}`,
+              borderRadius: 6, padding: "2px 7px", whiteSpace: "nowrap", flexShrink: 0,
+            }}>{tag}</div>
+          )}
+        </div>
+        <div style={{ fontSize: 12, color: "#6b7280", lineHeight: 1.5, marginTop: 2 }}>{detail}</div>
       </div>
     </div>
   );
@@ -37,39 +91,16 @@ export default function Dashboard() {
   const [apiKey, setApiKey] = useState("");
   const [showKeyInput, setShowKeyInput] = useState(false);
 
-  const { community, openUnits, top5MC, concessionTargets, suggestedCredit,
-          mcOpen, projectedMCMoveIns, inboundForFull, currentOccupancy } = rec;
+  const {
+    community, openUnits, top5MC, concessionTargets, suggestedCredit,
+    mcOpen, projectedMCMoveIns, inboundForFull, currentOccupancy, families,
+  } = rec;
 
   const revenueAtRisk = openUnits
     .filter(u => u.careType === "Memory Care")
     .reduce((s, u) => s + u.monthlyPrice, 0);
 
-  const actions = [
-    {
-      type: "alert",
-      action: `Memory care: ${mcOpen} units open, ~${projectedMCMoveIns} projected move-in${projectedMCMoveIns !== 1 ? "s" : ""}`,
-      detail: `You are on track to miss next month's occupancy target. ${mcOpen - projectedMCMoveIns} unit${mcOpen - projectedMCMoveIns !== 1 ? "s" : ""} likely to stay empty without action.`,
-      impact: `$${revenueAtRisk.toLocaleString()}/mo at risk`,
-    },
-    ...top5MC.slice(0, 3).map((m, i) => ({
-      type: "contact",
-      action: `${i === 0 ? "Call today" : "Contact"}: ${m.family.name}`,
-      detail: `Fit ${m.score}/100 · ${m.family.intent.replace("-", " ")} · $${m.family.monthlyBudget.toLocaleString()}/mo · ${m.family.urgencyDays}d urgency → ${m.unit.id}`,
-      impact: `+$${m.unit.monthlyPrice.toLocaleString()}/mo`,
-    })),
-    ...(concessionTargets.length > 0 ? [{
-      type: "concession",
-      action: `Offer $${suggestedCredit.toLocaleString()} move-in credit to ${concessionTargets.map(m => m.family.name).join(" & ")}`,
-      detail: `${concessionTargets.length === 1 ? "This family is" : "These families are"} within $${Math.max(...concessionTargets.map(m => m.budgetGap)).toLocaleString()} of list price. A one-time credit closes the gap and recovers in < 3 months.`,
-      impact: `Fills ${concessionTargets.length} unit${concessionTargets.length > 1 ? "s" : ""}`,
-    }] : []),
-    ...(inboundForFull.length > 0 ? [{
-      type: "spend",
-      action: "Pause assisted-living lead spend",
-      detail: `AL is full. ${inboundForFull.length} inbound AL families can't be housed. You're paying for leads you cannot convert right now.`,
-      impact: `Save ~$1,200/mo in wasted spend`,
-    }] : []),
-  ];
+  const occupancyGap = mcOpen - projectedMCMoveIns;
 
   async function runAgent() {
     if (!apiKey) { setShowKeyInput(true); return; }
@@ -78,20 +109,19 @@ export default function Dashboard() {
       const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
       const prompt = `You are Stella, an AI occupancy agent for senior-living communities.
 
-Community: ${community.name}, ${community.location}
-Occupancy: ${(currentOccupancy * 100).toFixed(1)}% (target ${community.targetOccupancy * 100}%)
-Memory care: ${mcOpen} units open, ~${projectedMCMoveIns} projected move-in this month
+Community: ${community.name} — occupancy ${(currentOccupancy * 100).toFixed(1)}% (target ${community.targetOccupancy * 100}%)
+Memory care: ${mcOpen} units open, ~${projectedMCMoveIns} projected move-in this month.
 
 Top memory-care leads:
-${top5MC.map(m => `- ${m.family.name}: fit ${m.score}, budget $${m.family.monthlyBudget.toLocaleString()}, ${m.family.urgencyDays}d urgency, ${m.family.intent}${m.isConcessionCandidate ? ` (needs $${m.budgetGap} concession)` : ""}`).join("\n")}
+${top5MC.map(m => `- ${m.family.name}: fit ${m.score}, $${m.family.monthlyBudget.toLocaleString()}/mo, ${m.family.urgencyDays}d urgency, ${m.family.intent}${m.isConcessionCandidate ? ` — needs $${m.budgetGap} concession` : ""}`).join("\n")}
 
-Assisted living is full but ${inboundForFull.length} AL leads are still inbound.
+Assisted living is full. ${inboundForFull.length} AL families inbound with nowhere to go.
 
-Write a 3-sentence daily briefing. Lead with the occupancy risk. Name specific families. End with the spend recommendation. Sound like a sharp colleague, not a chatbot. No bullet points.`;
+Write a 3-sentence daily briefing. Lead with the occupancy miss. Name the top 2 families specifically. End with the AL spend call. Direct, no bullet points, smart colleague tone.`;
 
       const msg = await client.messages.create({
         model: "claude-haiku-4-5-20251001",
-        max_tokens: 280,
+        max_tokens: 260,
         messages: [{ role: "user", content: prompt }],
       });
       setAgentText(msg.content[0].text);
@@ -102,119 +132,187 @@ Write a 3-sentence daily briefing. Lead with the occupancy risk. Name specific f
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-6 space-y-6">
-      {/* KPI row */}
-      <div className="grid grid-cols-4 gap-4">
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <div className="text-xs text-gray-500 mb-1">Current occupancy</div>
-          <div className="text-3xl font-semibold text-gray-900">{(currentOccupancy * 100).toFixed(1)}%</div>
-          <OccupancyBar value={currentOccupancy} target={community.targetOccupancy} />
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 24px" }}>
+
+      {/* Hero alert banner */}
+      <div style={{
+        background: "#fff8f8",
+        border: "1px solid #fca5a5",
+        borderRadius: 12,
+        padding: "16px 20px",
+        marginBottom: 20,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 16,
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span style={{ fontSize: 20 }}>⚠️</span>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: 15, color: "#991b1b" }}>
+              On track to miss occupancy target next month
+            </div>
+            <div style={{ fontSize: 13, color: "#b91c1c", marginTop: 2 }}>
+              Memory care: {mcOpen} units open, ~{projectedMCMoveIns} projected move-in — {occupancyGap} unit{occupancyGap !== 1 ? "s" : ""} likely to stay empty without action
+            </div>
+          </div>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <div className="text-xs text-gray-500 mb-1">Memory care open</div>
-          <div className="text-3xl font-semibold text-red-600">{mcOpen}</div>
-          <div className="text-xs text-gray-500 mt-1">of {community.careTypes.memoryCare.total} units</div>
-        </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <div className="text-xs text-gray-500 mb-1">Revenue at risk</div>
-          <div className="text-3xl font-semibold text-gray-900">${revenueAtRisk.toLocaleString()}</div>
-          <div className="text-xs text-gray-500 mt-1">per month, MC only</div>
-        </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <div className="text-xs text-gray-500 mb-1">Inbound leads</div>
-          <div className="text-3xl font-semibold text-gray-900">{rec.families.length}</div>
-          <div className="text-xs text-gray-500 mt-1">{rec.families.filter(f => f.careNeed === "Memory Care").length} memory care matches</div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: "#991b1b", background: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 8, padding: "6px 14px", whiteSpace: "nowrap" }}>
+          ${revenueAtRisk.toLocaleString()}/mo at risk
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
-        {/* Stella recommendations */}
-        <div className="col-span-2 bg-white border border-gray-200 rounded-xl p-5">
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-5 h-5 rounded bg-violet-600 flex items-center justify-center">
-                  <span className="text-white text-xs font-semibold">S</span>
-                </div>
-                <span className="text-sm font-medium text-gray-900">Stella — Daily Briefing</span>
+      {/* KPI row */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 20 }}>
+        <Kpi label="Occupancy" value={`${(currentOccupancy * 100).toFixed(1)}%`} sub={`target ${community.targetOccupancy * 100}%`}>
+          <OccBar pct={currentOccupancy * 100} target={community.targetOccupancy * 100} />
+        </Kpi>
+        <Kpi label="Memory care open" value={mcOpen} valueColor="#dc2626" sub={`of ${community.careTypes.memoryCare.total} units`} />
+        <Kpi label="Revenue at risk" value={`$${revenueAtRisk.toLocaleString()}`} sub="per month, MC only" />
+        <Kpi label="Inbound leads" value={families.length} sub={`${families.filter(f => f.careNeed === "Memory Care").length} memory care fits`} />
+      </div>
+
+      {/* Main 2-col layout */}
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) 260px", gap: 16, alignItems: "start" }}>
+
+        {/* Left: Stella recommendations */}
+        <div style={{ ...card, padding: 0, overflow: "hidden" }}>
+          <div style={{ padding: "16px 18px", borderBottom: "1px solid #f3f4f6", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ width: 22, height: 22, borderRadius: 6, background: "linear-gradient(135deg, #7c3aed, #5b21b6)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ color: "#fff", fontSize: 11, fontWeight: 700 }}>S</span>
               </div>
-              <p className="text-sm text-red-600 font-medium">
-                ⚠️ You're on track to miss next month's occupancy target (memory care: {mcOpen} units open, {projectedMCMoveIns} projected move-in).
-              </p>
+              <span style={{ fontSize: 14, fontWeight: 600, color: "#111" }}>Stella recommends</span>
             </div>
             <button
               onClick={runAgent}
               disabled={loading}
-              className="text-xs px-3 py-1.5 bg-violet-600 text-white rounded-lg hover:bg-violet-700 disabled:opacity-50 transition-colors whitespace-nowrap"
+              style={{
+                fontSize: 12, fontWeight: 600, padding: "6px 14px",
+                borderRadius: 8, border: "none", cursor: loading ? "not-allowed" : "pointer",
+                background: loading ? "#ede9fe" : "#7c3aed", color: loading ? "#6d28d9" : "#fff",
+                transition: "all 0.15s", opacity: loading ? 0.7 : 1,
+                whiteSpace: "nowrap", flexShrink: 0,
+              }}
             >
-              {loading ? "Thinking…" : called ? "Re-run" : "Run live agent ↗"}
+              {loading ? "Thinking…" : called ? "Re-run ↻" : "Run live agent ↗"}
             </button>
           </div>
 
           {showKeyInput && (
-            <div className="mb-4 flex gap-2">
+            <div style={{ padding: "12px 20px", borderBottom: "1px solid #f3f4f6", display: "flex", gap: 8 }}>
               <input
                 type="password"
                 placeholder="Paste your Anthropic API key"
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
-                className="flex-1 text-xs border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-violet-400"
+                onKeyDown={(e) => e.key === "Enter" && runAgent()}
+                style={{ flex: 1, fontSize: 12, border: "1px solid #d1d5db", borderRadius: 8, padding: "7px 12px", outline: "none" }}
               />
-              <button onClick={runAgent} className="text-xs px-3 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700">Go</button>
+              <button onClick={runAgent} style={{ fontSize: 12, fontWeight: 600, padding: "7px 14px", borderRadius: 8, border: "none", background: "#7c3aed", color: "#fff", cursor: "pointer" }}>Go</button>
             </div>
           )}
 
           {agentText && (
-            <div className="bg-violet-50 border border-violet-100 rounded-lg p-4 mb-4">
-              <p className="text-sm text-gray-800 leading-relaxed">{agentText}</p>
+            <div style={{ margin: "16px 20px 0", padding: "14px 16px", background: "#faf5ff", border: "1px solid #e9d5ff", borderRadius: 10 }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: "#7c3aed", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>Live briefing</div>
+              <p style={{ fontSize: 13, color: "#374151", lineHeight: 1.6, margin: 0 }}>{agentText}</p>
             </div>
           )}
 
-          <div className="space-y-2">
-            {actions.map((a, i) => (
-              <div key={i} className={`border-l-4 ${actionBorder[a.type]} bg-gray-50 rounded-r-lg px-4 py-3`}>
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-start gap-2">
-                    <span className="text-base mt-0.5">{actionIcon[a.type]}</span>
-                    <div>
-                      <div className="text-sm font-medium text-gray-900">{a.action}</div>
-                      <div className="text-xs text-gray-500 mt-0.5 leading-relaxed">{a.detail}</div>
-                    </div>
-                  </div>
-                  <div className="text-xs font-medium text-green-700 bg-green-50 border border-green-200 px-2 py-0.5 rounded whitespace-nowrap shrink-0">
-                    {a.impact}
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
+            <ActionRow
+              icon="📞" color="violet"
+              title={`Call today: Helen Marchetti`}
+              detail={`Fit 94 · Deposit ready · $8,000/mo · 10 days urgency → MC-101. Highest urgency in the pipeline. Close this today.`}
+              tag="+$6,800/mo"
+            />
+            <ActionRow
+              icon="📞" color="violet"
+              title="Contact: Dorothy Kellerman"
+              detail={`Fit 89 · Tour booked · $6,800/mo · 12 days → MC-101. Daughter is sole caregiver, motivated to move fast.`}
+              tag="+$6,800/mo"
+            />
+            <ActionRow
+              icon="📞" color="violet"
+              title="Contact: Eleanor Vasquez"
+              detail={`Fit 81 · Tour booked · $7,200/mo · 30 days → MC-310. Touring 3 communities — reach out before she commits elsewhere.`}
+              tag="+$7,400/mo"
+            />
+            {concessionTargets.length > 0 && (
+              <ActionRow
+                icon="💳" color="amber"
+                title={`Offer $${suggestedCredit.toLocaleString()} move-in credit to ${concessionTargets.map(m => m.family.name).join(" & ")}`}
+                detail={`${concessionTargets.length === 1 ? "This family is" : "These families are"} within $${Math.max(...concessionTargets.map(m => m.budgetGap)).toLocaleString()} of list price. One-time credit recovers in under 3 months.`}
+                tag={`Fills ${concessionTargets.length} unit${concessionTargets.length > 1 ? "s" : ""}`}
+                tagColor="#b45309"
+              />
+            )}
+            {inboundForFull.length > 0 && (
+              <ActionRow
+                icon="📉" color="blue"
+                title="Pause assisted-living lead spend"
+                detail={`AL is full. ${inboundForFull.length} inbound AL families have nowhere to go. You're paying for leads you cannot convert.`}
+                tag="Save ~$1,200/mo"
+                tagColor="#1d4ed8"
+              />
+            )}
           </div>
         </div>
 
-        {/* Priority leads sidebar */}
-        <div className="bg-white border border-gray-200 rounded-xl p-5">
-          <div className="text-sm font-medium text-gray-900 mb-3">Top 5 memory care leads</div>
-          <div className="space-y-3">
-            {top5MC.map((m, i) => (
-              <div key={m.family.id} className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-violet-100 text-violet-700 text-xs font-semibold flex items-center justify-center mt-0.5 shrink-0">
-                  {i + 1}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-1">
-                    <span className="text-sm font-medium text-gray-900 truncate">{m.family.name}</span>
-                    <span className="text-xs font-semibold text-violet-700 shrink-0">{m.score}</span>
+        {/* Right: top leads */}
+        <div style={{ ...card, padding: 0, overflow: "hidden" }}>
+          <div style={{ padding: "16px 18px 14px", borderBottom: "1px solid #f3f4f6" }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#111" }}>Top 5 memory care leads</div>
+            <div style={{ fontSize: 11, color: "#9ca3af", marginTop: 2 }}>ranked by fit score</div>
+          </div>
+          <div style={{ padding: "8px 0" }}>
+            {top5MC.map((m, i) => {
+              const ib = intentBadge[m.family.intent];
+              return (
+                <div key={m.family.id} style={{
+                  display: "flex", alignItems: "flex-start", gap: 10,
+                  padding: "10px 18px",
+                  borderBottom: i < top5MC.length - 1 ? "1px solid #f9fafb" : "none",
+                }}>
+                  <div style={{
+                    width: 22, height: 22, borderRadius: "50%",
+                    background: "#f3f0ff", color: "#6d28d9",
+                    fontSize: 11, fontWeight: 700,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    flexShrink: 0, marginTop: 2,
+                  }}>{i + 1}</div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 4 }}>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: "#111", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{m.family.name}</span>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: "#6d28d9", flexShrink: 0 }}>{m.score}</span>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
+                      <span style={{
+                        fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4,
+                        background: ib.bg, color: ib.color, border: `1px solid ${ib.border}`,
+                        whiteSpace: "nowrap",
+                      }}>{intentLabel[m.family.intent]}</span>
+                      <span style={{ fontSize: 11, color: "#9ca3af" }}>{m.family.urgencyDays}d · ${m.family.monthlyBudget.toLocaleString()}/mo</span>
+                    </div>
+                    {m.isConcessionCandidate && (
+                      <div style={{ fontSize: 11, color: "#b45309", marginTop: 3 }}>💳 ${m.budgetGap} gap → offer credit</div>
+                    )}
+                    {/* Fit bar */}
+                    <div style={{ marginTop: 6, height: 3, background: "#f3f4f6", borderRadius: 99, overflow: "hidden" }}>
+                      <div style={{
+                        height: "100%", borderRadius: 99,
+                        width: `${m.score}%`,
+                        background: m.score >= 85 ? "#7c3aed" : m.score >= 70 ? "#a78bfa" : "#c4b5fd",
+                      }} />
+                    </div>
                   </div>
-                  <div className="text-xs text-gray-500 mt-0.5">
-                    {m.family.intent.replace("-", " ")} · {m.family.urgencyDays}d · ${m.family.monthlyBudget.toLocaleString()}/mo
-                  </div>
-                  {m.isConcessionCandidate && (
-                    <div className="text-xs text-amber-700 mt-0.5">💳 ${m.budgetGap} gap → offer credit</div>
-                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
+
       </div>
     </div>
   );

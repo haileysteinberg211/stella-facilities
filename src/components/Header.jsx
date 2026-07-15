@@ -1,32 +1,58 @@
 export default function Header({ activeTab, setActiveTab }) {
   const tabs = [
-    { id: "dashboard", label: "Agent Dashboard" },
+    { id: "dashboard", label: "Dashboard" },
     { id: "units", label: "Unit Board" },
-    { id: "leads", label: "Lead Pipeline" },
-    { id: "roi", label: "ROI Calculator" },
+    { id: "leads", label: "Demand" },
+    { id: "roi", label: "ROI" },
   ];
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-14">
-        <div className="flex items-center gap-3">
-          <div className="w-7 h-7 rounded-lg bg-violet-600 flex items-center justify-center">
-            <span className="text-white text-xs font-semibold">S</span>
+    <header style={{
+      background: "#fff",
+      borderBottom: "1px solid #e8e9eb",
+      position: "sticky",
+      top: 0,
+      zIndex: 50,
+    }}>
+      <div style={{
+        maxWidth: 1200,
+        margin: "0 auto",
+        padding: "0 24px",
+        height: 52,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{
+            width: 28, height: 28,
+            borderRadius: 8,
+            background: "linear-gradient(135deg, #7c3aed, #5b21b6)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0,
+          }}>
+            <span style={{ color: "#fff", fontSize: 12, fontWeight: 700 }}>S</span>
           </div>
-          <span className="font-semibold text-gray-900 text-sm">Stella for Facilities</span>
-          <span className="text-gray-300 text-xs">|</span>
-          <span className="text-gray-500 text-xs">Maplewood Senior Living</span>
+          <span style={{ fontWeight: 600, fontSize: 14, color: "#111" }}>Stella</span>
+          <span style={{ color: "#d1d5db", fontSize: 13 }}>·</span>
+          <span style={{ color: "#6b7280", fontSize: 13 }}>Maplewood Senior Living</span>
         </div>
-        <nav className="flex items-center gap-1">
+        <nav style={{ display: "flex", gap: 2 }}>
           {tabs.map((t) => (
             <button
               key={t.id}
               onClick={() => setActiveTab(t.id)}
-              className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
-                activeTab === t.id
-                  ? "bg-violet-50 text-violet-700 font-medium"
-                  : "text-gray-500 hover:text-gray-800 hover:bg-gray-100"
-              }`}
+              style={{
+                padding: "5px 14px",
+                borderRadius: 6,
+                border: "none",
+                cursor: "pointer",
+                fontSize: 13,
+                fontWeight: activeTab === t.id ? 600 : 400,
+                background: activeTab === t.id ? "#f3f0ff" : "transparent",
+                color: activeTab === t.id ? "#6d28d9" : "#6b7280",
+                transition: "all 0.15s",
+              }}
             >
               {t.label}
             </button>

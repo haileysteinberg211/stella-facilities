@@ -1,11 +1,12 @@
 @import "tailwindcss";
 
+* { box-sizing: border-box; }
+
 body {
   margin: 0;
-  background: #f8f9fb;
-  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  background: #f4f5f7;
+  font-family: -apple-system, 'Inter', 'Segoe UI', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-#root {
-  min-height: 100svh;
-}
+#root { min-height: 100svh; }

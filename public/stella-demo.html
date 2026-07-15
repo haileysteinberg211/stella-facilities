@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stella — APFM's demand↔supply flywheel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Mulish:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#333333; --navy:#1F3D54; --navy-tint:#E7EFF4; --blue:#6C9BB8;
+  --coral:#E4735E; --coral-dark:#C85A47; --apricot:#F4C77B; --cream:#FBF7F1; --sand:#F1E8DA;
+  --sage:#6FA890; --success:#3F8E6C; --warning:#E0A23B; --danger:#C4503B;
+  --white:#FFFFFF; --g50:#F7F6F4; --g100:#EEEDEA; --g300:#D6D3CD; --g500:#8A867E; --g700:#55524C;
+  --display:'Fraunces',Georgia,'Times New Roman',serif;
+  --sans:'Mulish',-apple-system,'Segoe UI',Roboto,sans-serif;
+  --radius-sm:8px; --radius:12px; --radius-lg:20px;
+  --shadow-sm:0 1px 2px rgba(31,61,84,.06); --shadow:0 8px 24px rgba(31,61,84,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.disp{font-family:var(--display);color:var(--navy);font-weight:600;line-height:1.15}
+.wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+.eyebrow{font-family:var(--sans);font-weight:800;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--coral)}
+.muted{color:var(--g500)}
+section{padding:64px 0;border-top:1px solid var(--sand)}
+section:first-of-type{border-top:none}
+
+/* top bar */
+.topbar{position:sticky;top:0;z-index:50;background:var(--navy);color:#fff;box-shadow:var(--shadow)}
+.topbar .in{max-width:1120px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;gap:22px}
+.brand{font-family:var(--display);font-weight:600;font-size:20px;color:#fff;display:flex;align-items:center;gap:10px}
+.dot{width:28px;height:28px;border-radius:50%;background:var(--coral);display:inline-flex;align-items:center;justify-content:center;font-family:var(--display);font-size:16px;color:#fff}
+.topbar .sep{width:1px;height:22px;background:rgba(255,255,255,.22)}
+.topbar .ctx{color:#C6D6E0;font-size:14px}
+.nav{margin-left:auto;display:flex;gap:20px}
+.nav a{color:#C6D6E0;font-size:14px;font-weight:600;text-decoration:none;padding-bottom:2px;border-bottom:2px solid transparent}
+.nav a:hover{color:#fff;border-color:var(--coral)}
+@media(max-width:820px){.nav{display:none}.topbar .ctx{display:none}}
+
+/* hero */
+.hero{padding:76px 0 60px}
+.hero .disp{font-size:56px;line-height:1.05;letter-spacing:-.01em}
+.hero .disp .em{color:var(--coral)}
+.hero p.lead{font-size:20px;color:var(--g700);max-width:64ch;margin-top:20px}
+.hero .thesis{margin-top:28px;display:flex;gap:12px;flex-wrap:wrap}
+.tpill{background:var(--white);border:1px solid var(--g100);border-radius:999px;padding:9px 16px;font-weight:700;font-size:14px;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:8px}
+@media(max-width:640px){.hero .disp{font-size:38px}}
+
+/* generic */
+.grid{display:grid;gap:20px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:860px){.g2,.g3{grid-template-columns:1fr}}
+.card{background:var(--white);border:1px solid var(--g100);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:26px}
+.card.rail-coral{border-left:4px solid var(--coral)}
+.card.rail-blue{border-left:4px solid var(--blue)}
+.card.rail-sage{border-left:4px solid var(--sage)}
+.card.rail-danger{border-left:4px solid var(--danger)}
+h2.section-h{font-size:34px;margin-bottom:8px}
+.section-sub{font-size:17px;color:var(--g700);max-width:70ch;margin-bottom:30px}
+.num-badge{width:34px;height:34px;border-radius:999px;background:var(--navy-tint);color:var(--navy);font-family:var(--display);font-weight:600;font-size:17px;display:inline-flex;align-items:center;justify-content:center}
+.tag{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:12px;padding:4px 11px;border-radius:999px}
+.t-dang{background:#F7E4E0;color:#9E3D2C}.t-warn{background:#FBF0DC;color:#9A6B18}.t-succ{background:#EAF3EE;color:#2E6B50}.t-info{background:var(--navy-tint);color:var(--navy)}
+.chip-row{display:flex;gap:8px;flex-wrap:wrap}
+.kpi .lbl{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--g500)}
+.kpi .val{font-family:var(--display);font-weight:600;font-size:40px;color:var(--navy);line-height:1.1;margin-top:6px;font-variant-numeric:tabular-nums}
+.kpi.dark{background:var(--navy)}.kpi.dark .lbl{color:#A9C2D1}.kpi.dark .val{color:#fff}
+.li{display:flex;gap:12px;align-items:flex-start;margin-top:14px}
+.li .mk{flex:none;width:22px;height:22px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;margin-top:2px}
+
+/* demand: search-origin split + funnel */
+.split{display:flex;height:26px;border-radius:999px;overflow:hidden;border:1px solid var(--g100);margin:10px 0 6px}
+.split>span{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;white-space:nowrap}
+.bars{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+.barrow{display:grid;grid-template-columns:132px 1fr 46px;align-items:center;gap:12px;font-size:13px;font-weight:600}
+.bartrack{height:12px;border-radius:999px;background:var(--g100);overflow:hidden}
+.barfill{height:100%;border-radius:999px}
+.tool{font-family:var(--sans);font-size:12.5px;font-weight:700;color:var(--navy);background:var(--navy-tint);border:1px solid #cfe0ea;border-radius:8px;padding:7px 11px;display:inline-flex;gap:8px;align-items:center}
+.tool code{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:600;color:var(--coral-dark)}
+
+/* capacity engine (map + forecast) */
+.panel{background:var(--white);border:1px solid var(--g100);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden}
+.panel-hd{padding:16px 20px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.panel-hd .ttl{font-family:var(--display);font-weight:600;font-size:17px;color:var(--navy)}
+.panel-hd .sub{font-size:12px;color:var(--g500);margin-top:2px}
+.seg{display:flex;gap:5px}
+.seg button, .flt button{font-family:var(--sans);font-size:12px;font-weight:700;padding:6px 13px;border-radius:999px;border:none;cursor:pointer;background:var(--g100);color:var(--g700);transition:.15s}
+.seg button.on, .flt button.on{background:var(--navy);color:#fff}
+.wing-lbl{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--g500);margin:16px 0 8px}
+.units{display:flex;flex-wrap:wrap;gap:6px}
+.unit{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;position:relative;cursor:default;transition:transform .1s}
+.unit:hover{transform:scale(1.12)}
+.unit .pin{position:absolute;top:-4px;right:-4px;width:11px;height:11px;border-radius:50%;background:var(--success);border:2px solid #fff}
+.legend{display:flex;gap:16px;flex-wrap:wrap;padding:14px 20px;border-top:1px solid var(--g100);font-size:12px;color:var(--g700)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:13px;height:13px;border-radius:4px;display:inline-block}
+.fc-wrap{padding:20px}
+.fc-toggles{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.scn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;border:1.5px solid var(--g300);background:transparent;color:var(--g500);cursor:pointer}
+.scn .sdot{width:8px;height:8px;border-radius:50%;background:var(--g300)}
+.deltas{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+@media(max-width:640px){.deltas{grid-template-columns:1fr}}
+.delta{border-radius:var(--radius);padding:12px 15px}
+.delta .dl{font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--g500)}
+.delta .dv{font-family:var(--display);font-weight:600;font-size:24px;margin-top:3px;font-variant-numeric:tabular-nums}
+#fcTip{position:absolute;background:var(--navy);color:#fff;border-radius:var(--radius-sm);padding:9px 12px;font-size:12px;pointer-events:none;box-shadow:var(--shadow);opacity:0;transition:opacity .1s;min-width:140px;z-index:5}
+#fcTip .tm{font-weight:800;color:#A9C2D1;margin-bottom:5px}
+#fcTip .tr{display:flex;justify-content:space-between;gap:10px;margin-bottom:2px}
+
+/* flywheel */
+.fly{display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:auto auto auto;gap:16px;align-items:center;margin-top:12px}
+.fnode{background:var(--white);border:1px solid var(--g100);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:20px;cursor:pointer;transition:.18s;border-top:4px solid var(--navy)}
+.fnode:hover,.fnode.on{transform:translateY(-3px);box-shadow:0 14px 30px rgba(31,61,84,.14)}
+.fnode .fn-k{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--coral)}
+.fnode .fn-t{font-family:var(--display);font-weight:600;font-size:18px;color:var(--navy);margin:5px 0 6px}
+.fnode .fn-d{font-size:13.5px;color:var(--g700)}
+.fnode.n1{grid-column:2;grid-row:1}.fnode.n2{grid-column:3;grid-row:2}.fnode.n3{grid-column:2;grid-row:3}.fnode.n4{grid-column:1;grid-row:2}
+.fcenter{grid-column:2;grid-row:2;text-align:center;padding:14px}
+.fcenter svg{width:100%;max-width:150px;height:auto}
+.fcenter .fc-t{font-family:var(--display);font-weight:600;color:var(--navy);font-size:15px;margin-top:6px}
+@media(max-width:860px){.fly{grid-template-columns:1fr}.fnode.n1,.fnode.n2,.fnode.n3,.fnode.n4,.fcenter{grid-column:1;grid-row:auto}.fcenter{order:5}}
+
+/* close */
+.close{background:var(--navy);color:#fff;border-radius:var(--radius-lg);padding:40px}
+.close h2{color:#fff;font-size:30px}
+.close p{color:#C6D6E0;font-size:17px;margin-top:12px;max-width:66ch}
+.close .em{color:var(--apricot);font-weight:700;font-family:var(--display)}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-weight:700;font-size:15px;border-radius:var(--radius);padding:12px 22px;border:none;cursor:pointer;background:var(--coral);color:#fff;text-decoration:none;margin-top:22px}
+.btn:hover{background:var(--coral-dark)}
+footer{padding:36px 0 60px;color:var(--g500);font-size:12.5px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="in">
+    <div class="brand"><span class="dot">S</span> Stella</div>
+    <div class="sep"></div>
+    <span class="ctx">A Place for Mom · the demand ↔ supply flywheel</span>
+    <nav class="nav">
+      <a href="#thesis">Thesis</a>
+      <a href="#leak">The leak</a>
+      <a href="#blindspot">The blind spot</a>
+      <a href="#engine">The engine</a>
+      <a href="#flywheel">The flywheel</a>
+    </nav>
+  </div>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Where love finds its place</div>
+    <h1 class="disp" style="margin-top:12px">Two leaks. <span class="em">One flywheel.</span></h1>
+    <p class="lead">A Place for Mom faces two existential threats at once — a <strong>demand leak</strong> at the top of the funnel and a <strong>supply blind spot</strong> in the buildings it fills. Solve them separately and you get two features. Solve them together and each one fuels the other.</p>
+    <div class="thesis">
+      <div class="tpill"><span class="tag t-dang">Problem 1</span> Demand leaking to AI answers</div>
+      <div class="tpill"><span class="tag t-warn">Problem 2</span> Supply capacity is a black box</div>
+      <div class="tpill"><span class="tag t-succ">The unlock</span> One fuels the other</div>
+    </div>
+  </div>
+</header>
+
+<!-- THESIS -->
+<section id="thesis">
+  <div class="wrap">
+    <div class="grid g3">
+      <div class="card kpi dark"><div class="lbl">Organic traffic, 2025</div><div class="val">−33%</div><div class="muted" style="color:#A9C2D1;font-size:13px;margin-top:6px">families no longer start at Google</div></div>
+      <div class="card kpi"><div class="lbl">Early-stage queries touched by AI answers</div><div class="val">75%</div><div class="muted" style="font-size:13px;margin-top:6px">the funnel now starts inside an LLM</div></div>
+      <div class="card kpi"><div class="lbl">Referrals sent to communities that can't serve them</div><div class="val">1 in 4</div><div class="muted" style="font-size:13px;margin-top:6px">supply blindness wastes real demand</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM 1: THE LEAK -->
+<section id="leak">
+  <div class="wrap">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:8px"><span class="num-badge">1</span><h2 class="section-h" style="margin:0">The top of the funnel is leaking</h2></div>
+    <p class="section-sub">Families used to begin on Google, where APFM owned the page. Now they begin by <em>asking</em> — ChatGPT, Gemini, Perplexity, AI Overviews. Those engines can describe senior care, but they can't see live availability, real pricing, or book a tour. APFM's demand starts where APFM is no longer present. Two moves plug the leak.</p>
+
+    <div class="grid g2">
+      <div class="card rail-coral">
+        <div class="eyebrow">Move A · Get cited</div>
+        <h3 style="font-size:22px;margin:6px 0 4px">GEO — Generative Engine Optimization</h3>
+        <p class="muted" style="font-size:14.5px">Be the source the answer engines quote. Structure APFM's 20 years of outcomes so ChatGPT, Gemini, Perplexity and AI Overviews cite APFM by name — the new "rank #1," measured as share of the answer.</p>
+        <div style="margin-top:16px">
+          <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--g500);margin-bottom:6px">APFM share of the AI answer</div>
+          <div class="bars">
+            <div class="barrow"><span>Google AI Overviews</span><div class="bartrack"><div class="barfill" style="width:49%;background:var(--sage)"></div></div><span style="text-align:right;color:var(--navy)">48.8%</span></div>
+            <div class="barrow"><span>Perplexity</span><div class="bartrack"><div class="barfill" style="width:61%;background:var(--sage)"></div></div><span style="text-align:right;color:var(--navy)">61%</span></div>
+            <div class="barrow"><span>Grok</span><div class="bartrack"><div class="barfill" style="width:77%;background:var(--sage)"></div></div><span style="text-align:right;color:var(--navy)">77%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card rail-blue">
+        <div class="eyebrow">Move B · Get transactable</div>
+        <h3 style="font-size:22px;margin:6px 0 4px">An MCP for the marketplace</h3>
+        <p class="muted" style="font-size:14.5px">Being cited isn't enough — the assistant has to <em>act</em>. An MCP server lets any AI navigate APFM's marketplace and transact: search live availability, pull real pricing, book a tour, reserve a bed. The answer engine owns the question; APFM owns the transaction.</p>
+        <div style="margin-top:16px" class="chip-row">
+          <span class="tool"><code>search_communities()</code></span>
+          <span class="tool"><code>get_market_pricing()</code></span>
+          <span class="tool"><code>book_tours()</code></span>
+          <span class="tool"><code>reserve_bed()</code></span>
+        </div>
+        <div style="margin-top:18px">
+          <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--g500);margin-bottom:8px">Demand arriving through the MCP</div>
+          <div class="chip-row" id="channelChips"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM 2: THE BLIND SPOT -->
+<section id="blindspot">
+  <div class="wrap">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:8px"><span class="num-badge">2</span><h2 class="section-h" style="margin:0">The building is a black box</h2></div>
+    <p class="section-sub">Capturing demand is worthless if you route it to a community that can't take it. Today the supply side has <strong>no real-time capacity visualization</strong> — so referrals land on full buildings, open units sit dark, and no one can forecast the revenue bleeding out. This is the half we built: <strong>Stella's capacity visualization engine.</strong></p>
+    <div class="grid g3" style="margin-bottom:8px">
+      <div class="card rail-danger"><div class="li"><span class="mk" style="background:#F7E4E0"><svg width="12" height="12" viewBox="0 0 24 24"><path d="M12 3 22 20H2Z" fill="none" stroke="#C4503B" stroke-width="2" stroke-linejoin="round"/><line x1="12" y1="10" x2="12" y2="14" stroke="#C4503B" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="#C4503B"/></svg></span><div><strong>Referrals wasted</strong><div class="muted" style="font-size:13.5px">demand routed to buildings with no matching unit</div></div></div></div>
+      <div class="card rail-danger"><div class="li"><span class="mk" style="background:#F7E4E0"><svg width="12" height="12" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="#C4503B" stroke-width="2"/></svg></span><div><strong>Units sit dark</strong><div class="muted" style="font-size:13.5px">open capacity nobody is actively filling</div></div></div></div>
+      <div class="card rail-danger"><div class="li"><span class="mk" style="background:#F7E4E0"><svg width="12" height="12" viewBox="0 0 24 24"><path d="M4 18 L10 12 L14 15 L20 7" fill="none" stroke="#C4503B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><strong>No forecast</strong><div class="muted" style="font-size:13.5px">occupancy & revenue risk is invisible until it lands</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- THE ENGINE (map + forecast) -->
+<section id="engine" style="border-top:none;padding-top:8px">
+  <div class="wrap">
+    <div class="eyebrow">The engine we built</div>
+    <h2 class="section-h" style="margin:6px 0 8px">Real-time capacity, unit by unit</h2>
+    <p class="section-sub">Maplewood Senior Living — 42 units across three care types. Stella reads live capacity, flags every open unit, matches incoming demand to the units that can actually take it, and forecasts the next 12 months of occupancy and revenue.</p>
+
+    <!-- facility map -->
+    <div class="panel" style="margin-bottom:20px">
+      <div class="panel-hd">
+        <div><div class="ttl">Facility map</div><div class="sub"><span id="mapUnits">42</span> units · <span style="color:var(--danger);font-weight:700"><span id="mapOpen">4</span> open</span> · <span style="color:var(--success);font-weight:700"><span id="mapMatched">3</span> leads matched</span></div></div>
+        <div class="flt" id="wingFilter">
+          <button data-w="all" class="on">All</button>
+          <button data-w="IL">IL</button>
+          <button data-w="AL">AL</button>
+          <button data-w="MC">MC</button>
+        </div>
+      </div>
+      <div id="mapBody" style="padding:14px 20px"></div>
+      <div class="legend">
+        <span><i style="background:var(--blue)"></i>Independent Living</span>
+        <span><i style="background:var(--navy)"></i>Assisted Living</span>
+        <span><i style="background:var(--sage)"></i>Memory Care</span>
+        <span><i style="background:var(--danger)"></i>Open — no lead</span>
+        <span><i style="background:var(--success)"></i>Open — lead matched</span>
+        <span><i style="background:var(--apricot)"></i>Future vacancy</span>
+      </div>
+    </div>
+
+    <!-- forecast -->
+    <div class="panel">
+      <div class="panel-hd">
+        <div><div class="ttl">12-month forecast</div><div class="sub">Aug 2026 — Jul 2027 · demand routed by Stella vs. left alone</div></div>
+        <div class="fc-toggles">
+          <div class="seg" id="metricSeg"><button data-m="occ" class="on">Occupancy %</button><button data-m="rev">Revenue $K</button></div>
+          <button class="scn" data-s="baseline" style="border-color:var(--danger)"><span class="sdot" style="background:var(--danger)"></span>No action</button>
+          <button class="scn" data-s="stella" style="border-color:var(--success)"><span class="sdot" style="background:var(--success)"></span>With Stella</button>
+          <button class="scn" data-s="aggressive" style="border-color:var(--warning)"><span class="sdot" style="background:var(--warning)"></span>Aggressive</button>
+        </div>
+      </div>
+      <div class="fc-wrap">
+        <div style="position:relative">
+          <div style="display:flex">
+            <div id="fcYAxis" style="width:42px;display:flex;flex-direction:column;justify-content:space-between;padding:8px 0 26px;font-size:10px;color:var(--g500);text-align:right"></div>
+            <div style="flex:1;position:relative">
+              <svg id="fcSvg" viewBox="0 0 560 156" style="width:100%;height:auto;overflow:visible"></svg>
+              <div id="fcXAxis" style="display:flex;justify-content:space-between;font-size:10px;color:var(--g500);margin-top:2px"></div>
+              <div id="fcTip"></div>
+            </div>
+          </div>
+          <div class="deltas" id="fcDeltas"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE FLYWHEEL -->
+<section id="flywheel">
+  <div class="wrap">
+    <div class="eyebrow" style="text-align:center">The unlock</div>
+    <h2 class="section-h" style="text-align:center;margin:6px 0 8px">One fuels the other</h2>
+    <p class="section-sub" style="margin:0 auto 8px;text-align:center">Demand intelligence and supply intelligence aren't two products — they're one loop. Every turn makes the next turn stronger.</p>
+
+    <div class="fly" id="fly">
+      <div class="fnode n1" data-i="0">
+        <div class="fn-k">Step 1 · Demand</div>
+        <div class="fn-t">Capture the question</div>
+        <div class="fn-d">GEO + the MCP turn every AI assistant into an APFM channel — families are captured where they now start.</div>
+      </div>
+      <div class="fnode n2" data-i="1">
+        <div class="fn-k">Step 2 · Match</div>
+        <div class="fn-t">Route to real capacity</div>
+        <div class="fn-d">Stella matches that demand only to units a community can actually fill — no wasted referrals.</div>
+      </div>
+      <div class="fcenter">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="60" cy="60" r="46" fill="none" stroke="var(--sand)" stroke-width="10"/>
+          <circle cx="60" cy="60" r="46" fill="none" stroke="var(--coral)" stroke-width="10" stroke-linecap="round" stroke-dasharray="66 223" transform="rotate(-90 60 60)"/>
+          <circle cx="60" cy="60" r="46" fill="none" stroke="var(--sage)" stroke-width="10" stroke-linecap="round" stroke-dasharray="66 223" transform="rotate(0 60 60)"/>
+          <circle cx="60" cy="60" r="46" fill="none" stroke="var(--navy)" stroke-width="10" stroke-linecap="round" stroke-dasharray="66 223" transform="rotate(90 60 60)"/>
+          <circle cx="60" cy="60" r="46" fill="none" stroke="var(--blue)" stroke-width="10" stroke-linecap="round" stroke-dasharray="66 223" transform="rotate(180 60 60)"/>
+          <path d="M60 8 l7 8 l-7 8" fill="none" stroke="var(--coral)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="fc-t">The Stella flywheel</div>
+      </div>
+      <div class="fnode n4" data-i="3">
+        <div class="fn-k">Step 4 · Data</div>
+        <div class="fn-t">Publish live capacity</div>
+        <div class="fn-d">Filled buildings keep their real availability current — the freshest supply signal in senior care.</div>
+      </div>
+      <div class="fnode n3" data-i="2">
+        <div class="fn-k">Step 3 · Fill</div>
+        <div class="fn-t">Fill the right units</div>
+        <div class="fn-d">Providers convert matched demand, occupancy climbs, and trust in APFM deepens.</div>
+      </div>
+    </div>
+
+    <div class="card rail-sage" id="flyNote" style="margin-top:20px">
+      <strong id="flyNoteT">Why it compounds:</strong>
+      <span id="flyNoteD" class="muted" style="font-size:15px"> Richer live capacity data makes the MCP's answers more accurate and more bookable — so APFM wins more AI-origin demand on the very next query. The loop tightens with every placement.</span>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSE -->
+<section style="border-top:none">
+  <div class="wrap">
+    <div class="close">
+      <div class="eyebrow" style="color:var(--apricot)">The ask</div>
+      <h2>Fund the loop, not the leak.</h2>
+      <p>Patch the demand leak with GEO and an MCP, and give the supply side eyes with Stella's capacity engine. <span class="em">Neither survives alone — together they compound.</span> Every family we route to a unit that's genuinely ready makes the next AI answer smarter, and the next family easier to serve.</p>
+      <a class="btn" href="/">Open the live Stella dashboard →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Stella · A Place for Mom capacity intelligence — hackathon prototype. Figures are illustrative, drawn from the APFM market brief and the Maplewood demo dataset. Palette and type per the APFM design profile (Fraunces + Mulish).
+  </div>
+</footer>
+
+<script>
+/* ---------------- data ---------------- */
+const T = {navy:"#1F3D54",blue:"#6C9BB8",sage:"#6FA890",coral:"#E4735E",apricot:"#F4C77B",
+  danger:"#C4503B",warning:"#E0A23B",success:"#3F8E6C",g100:"#EEEDEA",g300:"#D6D3CD",g500:"#8A867E",navyTint:"#E7EFF4"};
+
+const WING_COLOR = {IL:T.blue, AL:T.navy, MC:T.sage};
+const WING_LABEL = {IL:"Independent Living", AL:"Assisted Living", MC:"Memory Care"};
+const mcLead = {"MC-101":"Helen M.","MC-204":"Dorothy K.","MC-310":"Eleanor V."};
+
+const UNITS = [];
+for(let i=1;i<=18;i++) UNITS.push({id:"IL-"+String(i).padStart(2,"0"),wing:"IL",price:3800,status:i===5?"open":"occupied"});
+for(let i=1;i<=14;i++) UNITS.push({id:"AL-"+String(i).padStart(2,"0"),wing:"AL",price:5600,status:i===12?"future":"occupied"});
+["MC-101","MC-204","MC-310","MC-401","MC-402","MC-403","MC-501","MC-502","MC-503","MC-504"].forEach((id,i)=>{
+  const prices=[6800,5200,7400,6200,6500,5800,6000,6300,6600,7000];
+  UNITS.push({id,wing:"MC",price:prices[i],status:i<3?"open":"occupied",matched:mcLead[id]||null});
+});
+
+const CHANNELS = [["ChatGPT",4,T.navy],["Perplexity",3,T.sage],["Gemini",3,T.blue],["Epic EHR",3,T.coral],["Claude",2,T.warning]];
+
+const MONTHS = ["Aug","Sep","Oct","Nov","Dec","Jan","Feb","Mar","Apr","May","Jun","Jul"];
+const SCEN = {
+  baseline:{label:"No action",color:T.danger,occ:[92.9,90.5,88.1,85.7,83.3,80.9,79.5,79.5,79.5,79.5,79.5,79.5],rev:[243,237,230,224,218,212,208,208,208,208,208,208]},
+  stella:{label:"With Stella",color:T.success,occ:[92.9,95.2,97.6,97.6,97.6,97.6,97.6,97.6,97.6,97.6,97.6,97.6],rev:[243,250,257,257,257,257,257,257,257,257,257,257]},
+  aggressive:{label:"Aggressive",color:T.warning,occ:[92.9,97.6,100,100,100,100,100,100,100,100,100,100],rev:[243,252,260,263,263,263,263,263,263,263,263,263]},
+};
+
+/* ---------------- channel chips ---------------- */
+document.getElementById("channelChips").innerHTML = CHANNELS.map(([n,c,col])=>
+  `<span class="tag" style="background:${col}22;color:${col}"><span style="width:7px;height:7px;border-radius:50%;background:${col};display:inline-block"></span>${n} ${c}</span>`
+).join("");
+
+/* ---------------- facility map ---------------- */
+let wing = "all";
+function renderMap(){
+  const wings = wing==="all" ? ["IL","AL","MC"] : [wing];
+  const body = document.getElementById("mapBody");
+  body.innerHTML = wings.map(w=>{
+    const u = UNITS.filter(x=>x.wing===w);
+    const occ = u.filter(x=>x.status==="occupied").length;
+    const tiles = u.map(unit=>{
+      let bg=WING_COLOR[w], ring="", pin="", op=1, title=unit.id;
+      if(unit.status==="open" && unit.matched){bg=T.success;ring=`box-shadow:0 0 0 3px ${T.success}33`;pin='<span class="pin"></span>';title=unit.id+" → "+unit.matched;}
+      else if(unit.status==="open"){bg=T.danger;ring=`box-shadow:0 0 0 3px ${T.danger}33`;}
+      else if(unit.status==="future"){bg=T.apricot;op=.55;}
+      const label = unit.id.replace(/[A-Z]+-0*/,"");
+      return `<div class="unit" title="${title} · $${unit.price.toLocaleString()}/mo" style="background:${bg};opacity:${op};${ring}">${label}${pin}</div>`;
+    }).join("");
+    return `<div><div class="wing-lbl">${WING_LABEL[w]} · ${occ}/${u.length} occupied</div><div class="units">${tiles}</div></div>`;
+  }).join('<div style="height:16px"></div>');
+}
+document.getElementById("wingFilter").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b)return;
+  wing=b.dataset.w;
+  [...e.currentTarget.children].forEach(x=>x.classList.toggle("on",x===b));
+  renderMap();
+});
+renderMap();
+
+/* ---------------- forecast ---------------- */
+let metric="occ";
+let active={baseline:true,stella:true,aggressive:false};
+const CW=560, CH=140, PAD=8;
+
+function fcRender(){
+  const keys=Object.keys(SCEN).filter(k=>active[k]);
+  const vals=keys.flatMap(k=>SCEN[k][metric]);
+  const minV=Math.floor(Math.min(...vals)-4), maxV=Math.ceil(Math.max(...vals)+2);
+  const x=i=>(i/(MONTHS.length-1))*CW;
+  const y=v=>PAD + (CH - ((v-minV)/(maxV-minV))*CH);
+
+  // grid
+  let svg="";
+  for(let g=0;g<=4;g++){const gy=PAD+g/4*CH; svg+=`<line x1="0" y1="${gy}" x2="${CW}" y2="${gy}" stroke="${T.g100}" stroke-width="1"/>`;}
+  // lines
+  keys.forEach(k=>{
+    const s=SCEN[k], pts=s[metric].map((v,i)=>[x(i),y(v)]);
+    const d=pts.map((p,i)=>(i?"L":"M")+p[0]+","+p[1]).join(" ");
+    const area=d+` L${CW},${PAD+CH} L0,${PAD+CH} Z`;
+    svg+=`<path d="${area}" fill="${s.color}" fill-opacity="0.07"/>`;
+    svg+=`<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+    pts.forEach(p=>{svg+=`<circle cx="${p[0]}" cy="${p[1]}" r="3.4" fill="${s.color}" stroke="#fff" stroke-width="1.5"/>`;});
+  });
+  // hover targets
+  MONTHS.forEach((m,i)=>{svg+=`<rect x="${x(i)-CW/MONTHS.length/2}" y="0" width="${CW/MONTHS.length}" height="${CH+PAD*2}" fill="transparent" data-i="${i}" class="fcHit"/>`;});
+  document.getElementById("fcSvg").innerHTML=svg;
+
+  // axes
+  document.getElementById("fcYAxis").innerHTML=[maxV,Math.round((maxV+minV)/2),minV].map(v=>`<span>${metric==="occ"?v+"%":"$"+v+"K"}</span>`).join("");
+  document.getElementById("fcXAxis").innerHTML=MONTHS.map(m=>`<span style="flex:1;text-align:center">${m}</span>`).join("");
+
+  // deltas (only when baseline+stella both on)
+  const dz=document.getElementById("fcDeltas");
+  if(active.baseline && active.stella){
+    const revUp=SCEN.stella.rev.reduce((a,b)=>a+b,0)-SCEN.baseline.rev.reduce((a,b)=>a+b,0);
+    const gap=(SCEN.stella.occ[11]-SCEN.baseline.occ[11]).toFixed(1);
+    const avg=(SCEN.stella.occ.reduce((a,b)=>a+b,0)/12 - SCEN.baseline.occ.reduce((a,b)=>a+b,0)/12).toFixed(1);
+    dz.innerHTML=`
+      <div class="delta" style="background:#EAF3EE"><div class="dl">12-mo revenue uplift</div><div class="dv" style="color:${T.success}">+$${revUp.toLocaleString()}K</div></div>
+      <div class="delta" style="background:#FBF0DC"><div class="dl">Occupancy gap closed</div><div class="dv" style="color:#9A6B18">${gap}pp</div></div>
+      <div class="delta" style="background:${T.navyTint}"><div class="dl">Avg occupancy uplift</div><div class="dv" style="color:${T.navy}">+${avg}pp</div></div>`;
+    dz.style.display="grid";
+  } else { dz.style.display="none"; }
+
+  bindHover(minV,maxV);
+}
+
+function bindHover(minV,maxV){
+  const tip=document.getElementById("fcTip");
+  document.querySelectorAll(".fcHit").forEach(r=>{
+    r.addEventListener("mouseenter",()=>{
+      const i=+r.dataset.i;
+      const keys=Object.keys(SCEN).filter(k=>active[k]);
+      let html=`<div class="tm">${MONTHS[i]} 2026</div>`;
+      keys.forEach(k=>{const s=SCEN[k];html+=`<div class="tr"><span style="color:#C6D6E0">${s.label}</span><span style="font-weight:800;color:${s.color==='#C4503B'?'#E8A091':s.color==='#3F8E6C'?'#7FD3AC':'#F0C067'}">${metric==="occ"?s[metric][i]+"%":"$"+s[metric][i]+"K"}</span></div>`;});
+      if(active.baseline&&active.stella){const g=metric==="occ"?"+"+(SCEN.stella.occ[i]-SCEN.baseline.occ[i]).toFixed(1)+"%":"+$"+(SCEN.stella.rev[i]-SCEN.baseline.rev[i])+"K";html+=`<div class="tr" style="border-top:1px solid rgba(255,255,255,.15);margin-top:4px;padding-top:4px"><span style="color:#C6D6E0">Gap</span><span style="font-weight:800;color:#7FD3AC">${g}</span></div>`;}
+      tip.innerHTML=html;
+      tip.style.left=Math.min((i/(MONTHS.length-1))*100+2,66)+"%";
+      tip.style.top="6px";
+      tip.style.opacity="1";
+    });
+  });
+  document.getElementById("fcSvg").addEventListener("mouseleave",()=>{tip.style.opacity="0";});
+}
+
+document.getElementById("metricSeg").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b)return;
+  metric=b.dataset.m;
+  [...e.currentTarget.children].forEach(x=>x.classList.toggle("on",x===b));
+  fcRender();
+});
+document.querySelectorAll(".scn").forEach(b=>{
+  if(active[b.dataset.s]){b.classList.add("on");b.style.background=SCEN[b.dataset.s].color+"1f";b.style.color=SCEN[b.dataset.s].color;}
+  b.addEventListener("click",()=>{
+    const k=b.dataset.s;
+    const onCount=Object.values(active).filter(Boolean).length;
+    if(active[k]&&onCount<=1) return; // keep at least one
+    active[k]=!active[k];
+    if(active[k]){b.style.background=SCEN[k].color+"1f";b.style.color=SCEN[k].color;b.classList.add("on");}
+    else{b.style.background="transparent";b.style.color=T.g500;b.classList.remove("on");}
+    fcRender();
+  });
+});
+fcRender();
+
+/* ---------------- flywheel ---------------- */
+const FLY=[
+  ["Demand feeds match","Every AI-origin family captured by GEO + the MCP becomes a candidate Stella can place — the funnel finally reaches the buildings."],
+  ["Match feeds fill","Routing only servable demand means providers convert more of what they receive — fewer dead-end referrals, higher fill velocity."],
+  ["Fill feeds data","As units fill, communities keep their real availability live in APFM — the freshest, truest supply signal in the market."],
+  ["Data feeds demand","Richer live capacity makes the MCP's answers accurate and bookable, so APFM wins more AI-origin demand on the next query. The loop tightens."],
+];
+const flyNoteT=document.getElementById("flyNoteT"), flyNoteD=document.getElementById("flyNoteD");
+document.getElementById("fly").addEventListener("click",e=>{
+  const n=e.target.closest(".fnode"); if(!n)return;
+  document.querySelectorAll(".fnode").forEach(x=>x.classList.toggle("on",x===n));
+  const i=+n.dataset.i;
+  flyNoteT.textContent=FLY[i][0]+":";
+  flyNoteD.textContent=" "+FLY[i][1];
+});
+</script>
+</body>
+</html>

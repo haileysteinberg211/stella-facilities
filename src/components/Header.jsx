@@ -15,7 +15,7 @@ export default function Header({ activeTab, setActiveTab }) {
           </div>
           <span className="font-semibold text-gray-900 text-sm">Stella for Facilities</span>
           <span className="text-gray-300 text-xs">|</span>
-          <span className="text-gray-500 text-xs">Sunrise Ridge Senior Living</span>
+          <span className="text-gray-500 text-xs">Maplewood Senior Living</span>
         </div>
         <nav className="flex items-center gap-1">
           {tabs.map((t) => (

@@ -1,0 +1,215 @@
+{
+  "community": {
+    "name": "Maplewood Senior Living",
+    "location": "Bellevue, WA",
+    "totalUnits": 42,
+    "careTypes": {
+      "independentLiving": { "total": 18, "occupied": 18 },
+      "assistedLiving":    { "total": 14, "occupied": 14 },
+      "memoryCare":        { "total": 10, "occupied": 7 }
+    },
+    "targetOccupancy": 0.92,
+    "avgMonthlyRate": 5800
+  },
+
+  "units": [
+    {
+      "id": "MC-101",
+      "careType": "Memory Care",
+      "room": "Private Suite",
+      "monthlyPrice": 6800,
+      "availableFrom": "2026-07-10",
+      "daysVacant": 35,
+      "notes": "Corner room, garden view"
+    },
+    {
+      "id": "MC-204",
+      "careType": "Memory Care",
+      "room": "Semi-Private",
+      "monthlyPrice": 5200,
+      "availableFrom": "2026-07-01",
+      "daysVacant": 44,
+      "notes": "Near nursing station"
+    },
+    {
+      "id": "MC-310",
+      "careType": "Memory Care",
+      "room": "Private Suite",
+      "monthlyPrice": 7400,
+      "availableFrom": "2026-07-18",
+      "daysVacant": 27,
+      "notes": "Recently renovated, natural light"
+    },
+    {
+      "id": "IL-05",
+      "careType": "Independent Living",
+      "room": "Studio",
+      "monthlyPrice": 3800,
+      "availableFrom": "2026-08-01",
+      "daysVacant": 5,
+      "notes": "Short-term vacancy — tenant transferring to AL"
+    },
+    {
+      "id": "AL-12",
+      "careType": "Assisted Living",
+      "room": "One Bedroom",
+      "monthlyPrice": 5600,
+      "availableFrom": "2026-08-15",
+      "daysVacant": 0,
+      "notes": "Future vacancy — current resident moving to memory care"
+    }
+  ],
+
+  "families": [
+    {
+      "id": "F-001",
+      "name": "Dorothy Kellerman",
+      "careNeed": "Memory Care",
+      "monthlyBudget": 6800,
+      "urgencyDays": 12,
+      "intent": "tour-booked",
+      "distanceMiles": 4.2,
+      "notes": "Daughter is sole caregiver. Mother has moderate dementia. Ready to move immediately after tour."
+    },
+    {
+      "id": "F-002",
+      "name": "Harold & Jean Whitmore",
+      "careNeed": "Memory Care",
+      "monthlyBudget": 4900,
+      "urgencyDays": 18,
+      "intent": "tour-booked",
+      "distanceMiles": 7.1,
+      "notes": "Husband has early-stage Alzheimer's. Wife insists on semi-private to manage costs. $300 under best unit price."
+    },
+    {
+      "id": "F-003",
+      "name": "Eleanor Vasquez",
+      "careNeed": "Memory Care",
+      "monthlyBudget": 7200,
+      "urgencyDays": 30,
+      "intent": "tour-booked",
+      "distanceMiles": 9.8,
+      "notes": "Touring 3 communities. Strong preference for private room. Budget is flexible."
+    },
+    {
+      "id": "F-004",
+      "name": "Robert Okafor",
+      "careNeed": "Memory Care",
+      "monthlyBudget": 5000,
+      "urgencyDays": 25,
+      "intent": "inquiry",
+      "distanceMiles": 11.3,
+      "notes": "Son is managing transition. Budget firm at $5,000. Needs semi-private. $200 under best unit price."
+    },
+    {
+      "id": "F-005",
+      "name": "Margaret Sato",
+      "careNeed": "Memory Care",
+      "monthlyBudget": 7500,
+      "urgencyDays": 45,
+      "intent": "tour-booked",
+      "distanceMiles": 6.0,
+      "notes": "Referred by neurologist. Looking ahead, not urgent. High budget, strong fit for renovated unit."
+    },
+    {
+      "id": "F-006",
+      "name": "Clara Hutchinson",
+      "careNeed": "Memory Care",
+      "monthlyBudget": 4200,
+      "urgencyDays": 60,
+      "intent": "inquiry",
+      "distanceMiles": 22.4,
+      "notes": "Budget well below memory care range. Not a fit without significant concession."
+    },
+    {
+      "id": "F-007",
+      "name": "Thomas Brennan",
+      "careNeed": "Memory Care",
+      "monthlyBudget": 6500,
+      "urgencyDays": 90,
+      "intent": "inquiry",
+      "distanceMiles": 18.7,
+      "notes": "Early planner. No urgency. Distance is a concern."
+    },
+    {
+      "id": "F-008",
+      "name": "Sandra Nguyen",
+      "careNeed": "Assisted Living",
+      "monthlyBudget": 5400,
+      "urgencyDays": 14,
+      "intent": "deposit-ready",
+      "distanceMiles": 3.5,
+      "notes": "Urgent. Deposit-ready. No AL units open — this lead cannot be housed."
+    },
+    {
+      "id": "F-009",
+      "name": "William Cho",
+      "careNeed": "Assisted Living",
+      "monthlyBudget": 5000,
+      "urgencyDays": 21,
+      "intent": "tour-booked",
+      "distanceMiles": 5.8,
+      "notes": "Motivated family. No AL capacity until mid-August at earliest."
+    },
+    {
+      "id": "F-010",
+      "name": "Patricia Gómez",
+      "careNeed": "Assisted Living",
+      "monthlyBudget": 5800,
+      "urgencyDays": 30,
+      "intent": "tour-booked",
+      "distanceMiles": 8.2,
+      "notes": "AL full. Lead spend here is wasted at current capacity."
+    },
+    {
+      "id": "F-011",
+      "name": "James Delacroix",
+      "careNeed": "Assisted Living",
+      "monthlyBudget": 4800,
+      "urgencyDays": 45,
+      "intent": "inquiry",
+      "distanceMiles": 14.0,
+      "notes": "AL full. Low urgency."
+    },
+    {
+      "id": "F-012",
+      "name": "Ruth Andersen",
+      "careNeed": "Independent Living",
+      "monthlyBudget": 3600,
+      "urgencyDays": 20,
+      "intent": "tour-booked",
+      "distanceMiles": 2.1,
+      "notes": "IL unit available Aug 1. Close match if willing to wait 2 weeks."
+    },
+    {
+      "id": "F-013",
+      "name": "George Petrov",
+      "careNeed": "Memory Care",
+      "monthlyBudget": 6000,
+      "urgencyDays": 35,
+      "intent": "inquiry",
+      "distanceMiles": 13.5,
+      "notes": "Moderate budget, moderate urgency. Fits MC-101 on care type and budget."
+    },
+    {
+      "id": "F-014",
+      "name": "Helen Marchetti",
+      "careNeed": "Memory Care",
+      "monthlyBudget": 8000,
+      "urgencyDays": 10,
+      "intent": "deposit-ready",
+      "distanceMiles": 5.5,
+      "notes": "Highest urgency in pipeline. Budget exceeds all open units. Best immediate close opportunity."
+    },
+    {
+      "id": "F-015",
+      "name": "Frank Osei",
+      "careNeed": "Assisted Living",
+      "monthlyBudget": 5200,
+      "urgencyDays": 60,
+      "intent": "inquiry",
+      "distanceMiles": 20.0,
+      "notes": "AL full. Long timeline. Not a near-term conversion."
+    }
+  ]
+}
